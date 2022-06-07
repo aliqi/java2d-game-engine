@@ -51,3 +51,14 @@ public class Demo {
     }
 }
 ```
+
+### game.properties
+Put or create _game.properties_ file in the **resources** folder.
+```properties
+title=Game
+version=1.0
+width=1280
+height=720
+resizeable=false
+icon=classpath:assets/sprites/profile.jpg
+```
