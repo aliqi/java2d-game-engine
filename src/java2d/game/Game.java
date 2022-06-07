@@ -71,7 +71,7 @@ public class Game {
     }
 
     void render(Graphics2D g) {
-        if (scene != null)
+        if (scene != null && g != null)
             scene.render(g);
     }
 
