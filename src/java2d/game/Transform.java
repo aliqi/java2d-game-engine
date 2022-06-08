@@ -29,8 +29,8 @@ public class Transform extends GameComponent {
     }
 
     public Point2D getPosition() {
-        return new Point2D.Double(globalTransform.getTranslateX(),
-                globalTransform.getTranslateY());
+        return new Point2D.Double(globalTransform.getTranslateX() + ox * sx,
+                globalTransform.getTranslateY() + oy * sy);
     }
 
     public void setPosition(double x, double y) {
@@ -127,7 +127,7 @@ public class Transform extends GameComponent {
     void calculateLocalTransform() {
         if (isDirty) {
             localTransform.setToIdentity();
-            localTransform.translate(px, py);
+            localTransform.translate(px - ox * sx, py - oy * sy);
             localTransform.rotate(Math.toRadians(r), ox * sx, oy * sy);
             localTransform.scale(sx, sy);
 
