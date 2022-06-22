@@ -9,6 +9,8 @@ import java.awt.geom.Point2D;
 @Unique
 public class Transform extends GameComponent {
 
+    protected final AffineTransform localNoOriginTransform = new AffineTransform();
+
     protected final AffineTransform localTransform = new AffineTransform();
 
     protected final AffineTransform globalTransform = new AffineTransform();
@@ -23,14 +25,16 @@ public class Transform extends GameComponent {
 
     private boolean isDirty = true;
 
+    private final AffineTransform tempTransform = new AffineTransform();
+
     public AffineTransform getLocalTransform() {
         calculateLocalTransform();
         return localTransform;
     }
 
     public Point2D getPosition() {
-        return new Point2D.Double(globalTransform.getTranslateX() + ox * sx,
-                globalTransform.getTranslateY() + oy * sy);
+        invalidate();
+        return new Point2D.Double(tempTransform.getTranslateX(), tempTransform.getTranslateY());
     }
 
     public void setPosition(double x, double y) {
@@ -119,17 +123,31 @@ public class Transform extends GameComponent {
     public void invalidate() {
         calculateLocalTransform();
         globalTransform.setTransform(localTransform);
+        tempTransform.setTransform(localNoOriginTransform);
+
         GameObject parent = gameObject.getParent();
-        if (parent != null)
+
+        if (parent != null) {
             globalTransform.preConcatenate(parent.transform.globalTransform);
+            tempTransform.preConcatenate(parent.transform.globalTransform);
+        }
     }
 
     void calculateLocalTransform() {
         if (isDirty) {
+            double ax = ox * sx;
+            double ay = oy * sy;
+            double rad = Math.toRadians(r);
+
             localTransform.setToIdentity();
-            localTransform.translate(px - ox * sx, py - oy * sy);
-            localTransform.rotate(Math.toRadians(r), ox * sx, oy * sy);
+            localTransform.translate(px - ax, py - ay);
+            localTransform.rotate(rad, ax, ay);
             localTransform.scale(sx, sy);
+
+            localNoOriginTransform.setToIdentity();
+            localNoOriginTransform.translate(px, py);
+            localNoOriginTransform.rotate(rad, ax, ay);
+            localNoOriginTransform.scale(sx, sy);
 
             isDirty = false;
         }
