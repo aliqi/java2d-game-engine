@@ -146,7 +146,6 @@ public class Transform extends GameComponent {
 
             localNoOriginTransform.setToIdentity();
             localNoOriginTransform.translate(px, py);
-            localNoOriginTransform.rotate(rad, ax, ay);
             localNoOriginTransform.scale(sx, sy);
 
             isDirty = false;
