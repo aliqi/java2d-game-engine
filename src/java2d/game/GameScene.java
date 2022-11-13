@@ -21,7 +21,7 @@ public class GameScene {
 
     final List<GameObject> roots = new CopyOnWriteArrayList<>();
 
-    private final SpriteRenderBatch spriteRenderBatch;
+    private final GraphicsRenderBatch graphicsRenderBatch;
 
     private Camera camera;
 
@@ -42,7 +42,7 @@ public class GameScene {
     }
 
     public GameScene() {
-        spriteRenderBatch = new SpriteRenderBatch();
+        graphicsRenderBatch = new GraphicsRenderBatch();
     }
 
     final void active() {
@@ -86,27 +86,27 @@ public class GameScene {
         return list;
     }
 
-    List<Orderable> findOrderables(GameScene scene) {
-        List<Orderable> list = new LinkedList<>();
+    List<RenderOrderable> findRenderOrderables(GameScene scene) {
+        List<RenderOrderable> list = new LinkedList<>();
         Queue<GameObject> queue = new LinkedList<>();
 
         for (GameObject o : roots)
             queue.offer(o);
 
-        findOrderables(list, queue);
+        findRenderOrderables(list, queue);
         return list;
     }
 
-    List<Orderable> findOrderables(GameObject obj) {
-        List<Orderable> list = new LinkedList<>();
+    List<RenderOrderable> findRenderOrderables(GameObject obj) {
+        List<RenderOrderable> list = new LinkedList<>();
         Queue<GameObject> queue = new LinkedList<>();
 
-        findGraphics2DRender(list, queue, obj);
-        findOrderables(list, queue);
+        findGraphicsRender(list, queue, obj);
+        findRenderOrderables(list, queue);
         return list;
     }
 
-    private void findOrderables(List<Orderable> list, Queue<GameObject> queue) {
+    private void findRenderOrderables(List<RenderOrderable> list, Queue<GameObject> queue) {
         while (queue.size() > 0) {
             GameObject o = queue.poll();
             SortGroup group = o.getComponent(SortGroup.class);
@@ -116,14 +116,15 @@ public class GameScene {
                 continue;
             }
 
-            findGraphics2DRender(list, queue, o);
+            findGraphicsRender(list, queue, o);
         }
     }
 
-    private void findGraphics2DRender(List<Orderable> list, Queue<GameObject> queue, GameObject o) {
-        Graphics2DRender render = o.getComponent(Graphics2DRender.class);
-        if (render != null)
-            list.add(render);
+    private void findGraphicsRender(List<RenderOrderable> list, Queue<GameObject> queue, GameObject o) {
+        List<GraphicsRender> renders = o.getComponents(GraphicsRender.class);
+
+        if (renders != null)
+            list.addAll(renders);
 
         for (GameObject oc : o)
             queue.offer(oc);
@@ -205,6 +206,6 @@ public class GameScene {
 
     final void render(Graphics2D g) {
         if (actived)
-            spriteRenderBatch.render(this, g);
+            graphicsRenderBatch.render(this, g);
     }
 }

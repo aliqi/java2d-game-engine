@@ -2,10 +2,6 @@ package java2d.game;
 
 import java.awt.geom.AffineTransform;
 
-/**
- * Author:     Zhao Yan
- * DateTime:   2022/5/28 16:09
- */
 @Unique
 public class Camera extends GameComponent {
 

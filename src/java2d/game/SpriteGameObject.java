@@ -51,6 +51,6 @@ public class SpriteGameObject extends GameObject {
         SpriteRender spriteRender = getSpriteRender();
 
         if (spriteRender != null)
-            spriteRender.setOrder(order);
+            spriteRender.setRenderOrder(order);
     }
 }

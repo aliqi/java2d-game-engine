@@ -39,6 +39,10 @@ public class GameObject implements Iterable<GameObject> {
         this.name = name;
     }
 
+    void sortComponents() {
+        Collections.sort(components);
+    }
+
     public final void destroy() {
         if (destroyed) return;
 
@@ -122,20 +126,23 @@ public class GameObject implements Iterable<GameObject> {
 
     public <T extends GameComponent> T getComponent(Class<T> c) {
         for (GameComponent component : components)
-            if (c.isAssignableFrom(component.getClass())) return (T) component;
+            if (c.isAssignableFrom(component.getClass()))
+                return (T) component;
         return null;
     }
 
-    public <T extends GameComponent> T[] getComponents(Class<T> c) {
+    public <T extends GameComponent> List<T> getComponents(Class<T> c) {
         List<T> list = new ArrayList<>();
         for (GameComponent component : components)
-            if (c.isAssignableFrom(component.getClass())) list.add((T) component);
-        return (T[]) list.toArray();
+            if (c.isAssignableFrom(component.getClass()))
+                list.add((T) component);
+        return list;
     }
 
     public <T extends GameComponent> void getComponents(Class<T> c, List<T> list) {
         for (GameComponent component : components)
-            if (c.isAssignableFrom(component.getClass())) list.add((T) component);
+            if (c.isAssignableFrom(component.getClass()))
+                list.add((T) component);
     }
 
     public <T extends GameComponent> T getComponentInChildren(Class<T> c) {
@@ -216,5 +223,15 @@ public class GameObject implements Iterable<GameObject> {
     @Override
     public Iterator<GameObject> iterator() {
         return objects.iterator();
+    }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "name='" + name + '\'' +
+                ", enabled=" + enabled +
+                ", actived=" + actived +
+                ", destroyed=" + destroyed +
+                '}';
     }
 }

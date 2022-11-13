@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 @Unique
-public class SpriteRender extends Graphics2DRender {
+public class SpriteRender extends GraphicsRender {
 
     public Sprite sprite;
 
@@ -20,17 +20,8 @@ public class SpriteRender extends Graphics2DRender {
 
     @Override
     protected void render(GameScene scene, Graphics2D g) {
-        if (sprite != null && gameObject != null) {
-            Camera camera = scene.getCamera();
-
-            if (camera == null)
-                transform.setTransform(gameObject.transform.globalTransform);
-            else {
-                AffineTransform ct = camera.getTransform();
-                transform.setTransform(ct);
-                transform.concatenate(gameObject.transform.globalTransform);
-            }
-
+        if (sprite != null) {
+            updateTransform(scene, transform);
             g.drawImage(sprite.getImage(), transform, null);
         }
     }

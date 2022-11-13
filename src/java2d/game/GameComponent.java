@@ -6,11 +6,24 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     public boolean enabled = true;
 
-    public int order = 1;
+    private int updateOrder = 0;
 
     boolean actived, destroyed;
 
     GameObject gameObject;
+
+    public int getUpdateOrder() {
+        return updateOrder;
+    }
+
+    public void setUpdateOrder(int updateOrder) {
+        if (updateOrder != this.updateOrder) {
+            this.updateOrder = updateOrder;
+
+            if (gameObject != null)
+                gameObject.sortComponents();
+        }
+    }
 
     public GameObject getGameObject() {
         return gameObject;
@@ -50,6 +63,6 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     @Override
     public int compareTo(GameComponent o) {
-        return Integer.compare(order, o.order);
+        return Integer.compare(updateOrder, o.updateOrder);
     }
 }
