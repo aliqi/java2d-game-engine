@@ -18,20 +18,14 @@ public class Demo {
     public static void main(String[] args) {
 
         // Create game and start it.
-        Game game = new Game();
-        game.getFrame().setTitle("Hello");
-        game.start();
+        Game game = new Game("Hello");
+        GameScene scene = game.getScene();
 
         Dimension renderSize = game.getFrame().getRenderSize();
         System.out.println("Render size: " + renderSize);
 
-        // Create scene
-        GameScene scene = new GameScene();
-        
         // Create a square
         createSquare(renderSize, scene);
-
-        game.load(scene);
     }
 
     private static void createSquare(Dimension renderSize, GameScene scene) {
