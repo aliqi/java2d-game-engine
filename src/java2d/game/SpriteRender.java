@@ -12,6 +12,12 @@ public class SpriteRender extends Graphics2DRender {
 
     private final AffineTransform transform = new AffineTransform();
 
+    public static SpriteRender create(String spritePath) {
+        SpriteRender render = new SpriteRender();
+        render.sprite = Sprite.load(spritePath);
+        return render;
+    }
+
     @Override
     protected void render(GameScene scene, Graphics2D g) {
         if (sprite != null && gameObject != null) {

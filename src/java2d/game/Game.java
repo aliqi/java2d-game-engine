@@ -38,6 +38,27 @@ public class Game {
     public Game() {
         frame = new GameFrame(this);
         inputSystem = new InputSystem(frame);
+
+        setupFrameEvents();
+        loadConfig();
+        setupConfig();
+        start();
+        load(new GameScene());
+        setupCamera();
+    }
+
+    private void setupCamera() {
+        GameObject co = new GameObject("camera");
+        Camera camera = new Camera();
+
+        scene.add(co);
+        co.addComponent(camera);
+
+        // Set scene camera
+        scene.setCamera(camera);
+    }
+
+    private void setupFrameEvents() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
                 stop();
@@ -46,9 +67,11 @@ public class Game {
         frame.addKeyListener(inputSystem);
         frame.addMouseListener(inputSystem);
         frame.addMouseWheelListener(inputSystem);
+    }
 
-        loadConfig();
-        setup();
+    public Game(String title) {
+        this();
+        frame.setTitle(title);
     }
 
     public static void debug(String message) {
@@ -126,7 +149,7 @@ public class Game {
         }
     }
 
-    private void setup() {
+    private void setupConfig() {
         if (Strings.isNotBlank(config.icon)) {
             Image icon = Images.load(config.icon);
             if (icon != null) frame.setIconImage(icon);
