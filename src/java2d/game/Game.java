@@ -31,6 +31,10 @@ public class Game {
         return frame;
     }
 
+    public Dimension getRenderSize() {
+        return frame.getRenderSize();
+    }
+
     public GameScene getScene() {
         return scene;
     }

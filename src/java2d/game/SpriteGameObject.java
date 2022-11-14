@@ -17,6 +17,10 @@ public class SpriteGameObject extends GameObject {
         return render == null ? null : render.sprite;
     }
 
+    public SpriteGameObject(String spritePath, double ratioX, double ratioY) {
+        this("SpriteGameObject", spritePath, ratioX, ratioY);
+    }
+
     public SpriteGameObject(String name, String spritePath, double ratioX, double ratioY) {
         super(name);
 
@@ -47,10 +51,10 @@ public class SpriteGameObject extends GameObject {
             transform.setOrigin(sprite.getWidth() * ox, sprite.getHeight() * oy);
     }
 
-    public void setOrder(int order) {
+    public void setRenderOrder(int renderOrder) {
         SpriteRender spriteRender = getSpriteRender();
 
         if (spriteRender != null)
-            spriteRender.setRenderOrder(order);
+            spriteRender.setRenderOrder(renderOrder);
     }
 }
