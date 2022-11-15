@@ -2,10 +2,6 @@ package java2d.game;
 
 import java.awt.geom.Point2D;
 
-/**
- * Author: ZhaoYan
- * Created: 2022/11/13 11:51
- */
 public class SpriteGameObject extends GameObject {
 
     public SpriteRender getSpriteRender() {

@@ -13,6 +13,8 @@ public class GameObject implements Iterable<GameObject> {
 
     public final Transform transform;
 
+    public String tag;
+
     private final List<GameObject> objects = new CopyOnWriteArrayList<>();
 
     private final List<GameComponent> components = new CopyOnWriteArrayList<>();
@@ -20,6 +22,10 @@ public class GameObject implements Iterable<GameObject> {
     private GameObject parent;
 
     boolean actived, destroyed;
+
+    public boolean compareTag(String tag) {
+        return Strings.equals(this.tag, tag);
+    }
 
     public GameObject getParent() {
         return parent;

@@ -24,6 +24,7 @@ public class LineRender extends GraphicsRender {
     @Override
     protected void render(GameScene scene, Graphics2D g) {
         Color c = g.getColor();
+        Stroke s = g.getStroke();
         AffineTransform t = g.getTransform();
 
         updateTransform(scene, transform);
@@ -52,6 +53,7 @@ public class LineRender extends GraphicsRender {
         }
 
         g.setTransform(t);
+        g.setStroke(s);
         g.setColor(c);
     }
 }
