@@ -9,8 +9,6 @@ import java.awt.geom.Point2D;
 @Unique
 public class Transform extends GameComponent {
 
-    protected final AffineTransform localNoOriginTransform = new AffineTransform();
-
     protected final AffineTransform localTransform = new AffineTransform();
 
     protected final AffineTransform globalTransform = new AffineTransform();
@@ -25,16 +23,22 @@ public class Transform extends GameComponent {
 
     private boolean isDirty = true;
 
-    private final AffineTransform tempTransform = new AffineTransform();
-
     public AffineTransform getLocalTransform() {
         calculateLocalTransform();
         return localTransform;
     }
 
+    public AffineTransform getGlobalTransform() {
+        invalidate();
+        return globalTransform;
+    }
+
     public Point2D getPosition() {
         invalidate();
-        return new Point2D.Double(tempTransform.getTranslateX(), tempTransform.getTranslateY());
+
+        Point2D position = new Point2D.Double(ox, oy);
+        globalTransform.transform(position, position);
+        return position;
     }
 
     public void setPosition(double x, double y) {
@@ -123,13 +127,15 @@ public class Transform extends GameComponent {
     public void invalidate() {
         calculateLocalTransform();
         globalTransform.setTransform(localTransform);
-        tempTransform.setTransform(localNoOriginTransform);
 
         GameObject parent = gameObject.getParent();
 
         if (parent != null) {
+            // align parent origin.
+            globalTransform.translate(parent.transform.ox, parent.transform.oy);
+
+            // apply parent transform.
             globalTransform.preConcatenate(parent.transform.globalTransform);
-            tempTransform.preConcatenate(parent.transform.globalTransform);
         }
     }
 
@@ -143,10 +149,6 @@ public class Transform extends GameComponent {
             localTransform.translate(px - ax, py - ay);
             localTransform.rotate(rad, ax, ay);
             localTransform.scale(sx, sy);
-
-            localNoOriginTransform.setToIdentity();
-            localNoOriginTransform.translate(px, py);
-            localNoOriginTransform.scale(sx, sy);
 
             isDirty = false;
         }
