@@ -16,7 +16,7 @@ class GraphicsRenderBatch {
             for (int i = 0; i < components.size(); i++) {
                 RenderOrderable render = components.get(i);
                 if (render instanceof GraphicsRender)
-                    ((GraphicsRender) render).render(scene, g);
+                    ((GraphicsRender) render).internalRender(scene, g);
                 else if (render instanceof SortGroup) {
                     List<RenderOrderable> group = scene.findRenderOrderables(((SortGroup) render).gameObject);
                     group.sort(Comparator.comparingInt(RenderOrderable::getRenderOrder));

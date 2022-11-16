@@ -3,14 +3,11 @@
 package java2d.game;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 @Unique
 public class SpriteRender extends GraphicsRender {
 
     public Sprite sprite;
-
-    private final AffineTransform transform = new AffineTransform();
 
     public static SpriteRender create(String spritePath) {
         SpriteRender render = new SpriteRender();
@@ -20,9 +17,7 @@ public class SpriteRender extends GraphicsRender {
 
     @Override
     protected void render(GameScene scene, Graphics2D g) {
-        if (sprite != null) {
-            updateTransform(scene, transform);
-            g.drawImage(sprite.getImage(), transform, null);
-        }
+        if (sprite != null)
+            g.drawImage(sprite.getImage(), affineTransform, null);
     }
 }

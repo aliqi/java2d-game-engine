@@ -28,6 +28,8 @@ public class GameFrame extends Frame implements ComponentListener {
 
     private boolean isOpened;
 
+    private boolean runnable = true;
+
     private Timer resizeThrottle;
 
     public Dimension getRenderSize() {
@@ -43,14 +45,13 @@ public class GameFrame extends Frame implements ComponentListener {
 
         isOpened = true;
 
+        setVisible(true);
+        calculateSize();
+
         if (paintThread == null) {
             paintThread = new PaintThread(this);
             paintThread.start();
         }
-
-        setVisible(true);
-
-        calculateSize();
 
         addComponentListener(this);
     }
@@ -73,13 +74,13 @@ public class GameFrame extends Frame implements ComponentListener {
     }
 
     public void paint(Graphics g) {
-        if (isOpened) {
+        if (isOpened && runnable) {
             game.update();
             game.render((Graphics2D) g);
         }
     }
 
-    private void prepareBuffer() {
+    void prepareBuffer() {
         if (bufferImage == null) {
             calculateSize();
             bufferImage = createImage(renderWidth, renderHeight);
@@ -97,7 +98,7 @@ public class GameFrame extends Frame implements ComponentListener {
     }
 
     public void update(Graphics g) {
-        if (isOpened) {
+        if (isOpened && runnable) {
             prepareBuffer();
 
             bufferGraphics.setColor(getBackground());
@@ -111,6 +112,8 @@ public class GameFrame extends Frame implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
+        runnable = false;
+
         if (resizeThrottle != null)
             resizeThrottle.cancel();
 
@@ -120,6 +123,8 @@ public class GameFrame extends Frame implements ComponentListener {
             public void run() {
                 resizeThrottle.cancel();
                 disposeBuffer();
+                prepareBuffer();
+                runnable = true;
 //                System.out.println("resized.");
             }
         }, 200, 200);
@@ -150,6 +155,13 @@ class PaintThread extends Thread {
     }
 
     public void run() {
+
+        try {
+            Thread.sleep(60);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while (started)
             frame.repaint();
     }

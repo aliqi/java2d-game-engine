@@ -10,28 +10,16 @@ public class LineRender extends GraphicsRender {
 
     public final List<Point2D> points = new ArrayList<>();
 
-    public Color color = Color.white;
-
     public boolean closed;
-
-    public BasicStroke stroke = new BasicStroke(1f);
-
-    private final AffineTransform transform = new AffineTransform();
 
     public LineRender() {
     }
 
     @Override
     protected void render(GameScene scene, Graphics2D g) {
-        Color c = g.getColor();
-        Stroke s = g.getStroke();
-        AffineTransform t = g.getTransform();
+        AffineTransform pt = g.getTransform();
 
-        updateTransform(scene, transform);
-
-        g.setColor(color);
-        g.setStroke(stroke);
-        g.transform(transform);
+        g.transform(affineTransform);
 
         int size = points.size();
         int last = size - 1;
@@ -52,8 +40,6 @@ public class LineRender extends GraphicsRender {
             }
         }
 
-        g.setTransform(t);
-        g.setStroke(s);
-        g.setColor(c);
+        g.setTransform(pt);
     }
 }

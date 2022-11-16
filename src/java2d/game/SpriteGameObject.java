@@ -21,11 +21,10 @@ public class SpriteGameObject extends GameObject {
         super(name);
 
         SpriteRender spriteRender = SpriteRender.create(spritePath);
-        Sprite sprite = spriteRender.sprite;
 
         addComponent(spriteRender);
 
-        transform.setOrigin(sprite.getWidth() * ratioX, sprite.getHeight() * ratioY);
+        setOrigin(ratioX, ratioY);
     }
 
     public SpriteGameObject(String name, String spritePath, Point2D originRatio) {
@@ -41,10 +40,14 @@ public class SpriteGameObject extends GameObject {
     }
 
     public void setOrigin(double ox, double oy) {
-        Sprite sprite = getSprite();
+        SpriteRender render = getSpriteRender();
 
-        if (sprite != null)
-            transform.setOrigin(sprite.getWidth() * ox, sprite.getHeight() * oy);
+        if (render != null) {
+            Sprite sprite = render.sprite;
+
+            if (sprite != null)
+                getSpriteRender().setOrigin(sprite.getWidth() * ox, sprite.getHeight() * oy);
+        }
     }
 
     public void setRenderOrder(int renderOrder) {

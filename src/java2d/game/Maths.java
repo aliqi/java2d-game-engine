@@ -50,4 +50,11 @@ public interface Maths {
 
         return Math.min(Math.max(value, min), max);
     }
+
+    static void normalize(Point2D point) {
+        if (point.getX() == 0 && point.getY() == 0)
+            return;
+        double length = point.distance(0, 0);
+        point.setLocation(point.getX() / length, point.getY() / length);
+    }
 }

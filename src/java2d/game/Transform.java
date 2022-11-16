@@ -15,8 +15,6 @@ public class Transform extends GameComponent {
 
     private double px, py;  // position
 
-    private double ox, oy;  // origin
-
     private double sx = 1, sy = 1;  // scale
 
     private double r;  // rotation
@@ -35,10 +33,7 @@ public class Transform extends GameComponent {
 
     public Point2D getPosition() {
         invalidate();
-
-        Point2D position = new Point2D.Double(ox, oy);
-        globalTransform.transform(position, position);
-        return position;
+        return new Point2D.Double(globalTransform.getTranslateX(), globalTransform.getTranslateY());
     }
 
     public void setPosition(double x, double y) {
@@ -79,21 +74,7 @@ public class Transform extends GameComponent {
         isDirty = true;
     }
 
-    public Point2D getOrigin() {
-        return new Point2D.Double(ox, oy);
-    }
 
-    public void setOrigin(double x, double y) {
-        ox = x;
-        oy = y;
-        isDirty = true;
-    }
-
-    public void setOrigin(Point2D origin) {
-        ox = origin.getX();
-        oy = origin.getY();
-        isDirty = true;
-    }
 
     public Point2D getLocalScale() {
         return new Point2D.Double(sx, sy);
@@ -131,9 +112,6 @@ public class Transform extends GameComponent {
         GameObject parent = gameObject.getParent();
 
         if (parent != null) {
-            // align parent origin.
-            globalTransform.translate(parent.transform.ox, parent.transform.oy);
-
             // apply parent transform.
             globalTransform.preConcatenate(parent.transform.globalTransform);
         }
@@ -141,13 +119,11 @@ public class Transform extends GameComponent {
 
     void calculateLocalTransform() {
         if (isDirty) {
-            double ax = ox * sx;
-            double ay = oy * sy;
             double rad = Math.toRadians(r);
 
             localTransform.setToIdentity();
-            localTransform.translate(px - ax, py - ay);
-            localTransform.rotate(rad, ax, ay);
+            localTransform.translate(px, py);
+            localTransform.rotate(rad);
             localTransform.scale(sx, sy);
 
             isDirty = false;
