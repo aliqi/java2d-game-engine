@@ -1,5 +1,3 @@
-// Creator: Aliqi
-// Create at: 2022/4/16
 package java2d.game;
 
 import java.awt.*;
@@ -8,7 +6,7 @@ import java.awt.event.ComponentListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameFrame extends Frame implements ComponentListener {
+public class GamePanel extends Panel implements ComponentListener {
 
     public int interval = 60;
 
@@ -18,7 +16,7 @@ public class GameFrame extends Frame implements ComponentListener {
 
     private final Game game;
 
-    private FramePaintThread paintThread;
+    private PanelPaintThread paintThread;
 
     private Insets insets;
 
@@ -38,7 +36,7 @@ public class GameFrame extends Frame implements ComponentListener {
         return new Dimension(renderWidth, renderHeight);
     }
 
-    GameFrame(Game game) {
+    GamePanel(Game game) {
         this.game = game;
         setLayout(null);
     }
@@ -52,7 +50,7 @@ public class GameFrame extends Frame implements ComponentListener {
         calculateSize();
 
         if (paintThread == null) {
-            paintThread = new FramePaintThread(this);
+            paintThread = new PanelPaintThread(this);
             paintThread.start();
         }
 
@@ -147,19 +145,18 @@ public class GameFrame extends Frame implements ComponentListener {
     }
 }
 
-class FramePaintThread extends Thread {
+class PanelPaintThread extends Thread {
 
-    GameFrame frame;
+    GamePanel target;
 
     boolean started = true;
 
-    public FramePaintThread(GameFrame frame) {
-        this.frame = frame;
+    public PanelPaintThread(GamePanel target) {
+        this.target = target;
     }
 
     public void run() {
-
-        int interval = Math.max(0, frame.interval);
+        int interval = Math.max(0, target.interval);
 
         if (interval > 0) {
             try {
@@ -170,6 +167,6 @@ class FramePaintThread extends Thread {
         }
 
         while (started)
-            frame.repaint();
+            target.repaint();
     }
 }

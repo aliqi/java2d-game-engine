@@ -49,6 +49,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
 
             Color c = g.getColor();
             Stroke s = g.getStroke();
+            Font f = g.getFont();
 
             g.setColor(color);
             g.setStroke(stroke);
@@ -57,6 +58,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
 
             g.setStroke(s);
             g.setColor(c);
+            g.setFont(f);
         }
     }
 
