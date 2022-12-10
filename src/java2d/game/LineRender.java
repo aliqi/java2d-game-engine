@@ -12,6 +12,8 @@ public class LineRender extends GraphicsRender {
 
     public boolean closed;
 
+    public Space space = Space.world;
+
     public LineRender() {
     }
 
@@ -19,7 +21,8 @@ public class LineRender extends GraphicsRender {
     protected void render(GameScene scene, Graphics2D g) {
         AffineTransform pt = g.getTransform();
 
-        g.transform(affineTransform);
+        if (space == Space.local)
+            g.transform(affineTransform);
 
         int size = points.size();
         int last = size - 1;
@@ -40,6 +43,7 @@ public class LineRender extends GraphicsRender {
             }
         }
 
-        g.setTransform(pt);
+        if (space == Space.local)
+            g.setTransform(pt);
     }
 }
