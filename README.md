@@ -3,7 +3,7 @@ Java 2D game engine.
 
 Simple game engine based on awt Graphics2D.
 
-Current version: 1.0
+Current version: 1.3
 
 ### How to use
 1. Add **java2d-game-engine.jar** to build path.
