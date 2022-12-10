@@ -5,11 +5,9 @@ public class FrameAnimation extends GameComponent {
 
     public CompletedEvent completed;
 
-    public int rate = 24;
-
     public boolean loop = true;
 
-    public Sprite[] frames;
+    public SpriteFrames frames;
 
     private int frameIndex;
 
@@ -17,15 +15,21 @@ public class FrameAnimation extends GameComponent {
 
     private double timer;
 
-    @Override
-    protected void awake() {
-        super.awake();
+    public void play() {
+        if (frames != null)
+            play(frames.totalTime);
     }
 
-    public void play() {
-        if (rate > 0)
-            timer = 1d / rate;
+    private long elasped;
+
+    public void play(float fixedTotalTime) {
+        if (frames != null) {
+            for (SpriteFrame f : frames.values)
+                f.animatingTime = f.time / frames.totalTime * fixedTotalTime;
+        }
+
         isPlaying = true;
+        elasped = System.nanoTime();
     }
 
     public void pause() {
@@ -34,36 +38,56 @@ public class FrameAnimation extends GameComponent {
 
     public void stop() {
         isPlaying = false;
+        reset();
+    }
+
+    public void reset() {
         frameIndex = 0;
+        timer = 0;
+    }
+
+    private SpriteFrame updateCurrentFrame() {
+        frameIndex = frameIndex % frames.length;
+        SpriteFrame c = frames.values[frameIndex];
+
+        if (timer < c.animatingTime)
+            return null;
+
+        for (int i = frameIndex + 1; i < frames.length; i++) {
+            SpriteFrame n = frames.values[i];
+
+            if (timer < n.animatingTime)
+                return c;
+
+            frameIndex = i;
+        }
+
+        return frames.values[frameIndex];
     }
 
     @Override
     protected void update() {
-        if (isPlaying && frames != null && frames.length > 0 && rate > 0) {
+        if (isPlaying && frames != null && frames.length > 0) {
 
-            double interval = 1d / rate;
+            SpriteFrame f = updateCurrentFrame();
+            SpriteRender spriteRender = getComponent(SpriteRender.class);
 
-            timer += Time.deltaTime;
+            if (spriteRender != null && f != null)
+                spriteRender.sprite = f.sprite;
 
-            if (timer >= interval) {
-                timer = 0;
-
-                frameIndex = frameIndex % frames.length;
-
-                SpriteRender spriteRender = getComponent(SpriteRender.class);
-
-                if (spriteRender != null)
-                    spriteRender.sprite = frames[frameIndex];
-
-                ++frameIndex;
-
-                if (!loop && frameIndex >= frames.length) {
+            if (timer >= frames.values[frames.length - 1].animatingTime) {
+                if (loop) {
+                    reset();
+                } else {
                     stop();
 
                     if (completed != null)
                         completed.completed();
+
+                    System.out.println((System.nanoTime() - elasped));
                 }
-            }
+            } else
+                timer += Time.deltaTime;
         }
     }
 
