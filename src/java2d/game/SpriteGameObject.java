@@ -42,12 +42,8 @@ public class SpriteGameObject extends GameObject {
     public void setOrigin(double ox, double oy) {
         SpriteRender render = getSpriteRender();
 
-        if (render != null) {
-            Sprite sprite = render.sprite;
-
-            if (sprite != null)
-                getSpriteRender().setOrigin(sprite.getWidth() * ox, sprite.getHeight() * oy);
-        }
+        if (render != null)
+            render.setOrigin(ox, oy);
     }
 
     public void setRenderOrder(int renderOrder) {

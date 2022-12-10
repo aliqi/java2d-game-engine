@@ -14,22 +14,24 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
 
     private int renderOrder;
 
-    private double ox, oy;
+    protected double originX, originY;
+
+    protected double renderOriginX, renderOriginY;
 
     protected final AffineTransform affineTransform = new AffineTransform();
 
     public Point2D getOrigin() {
-        return new Point2D.Double(ox, oy);
+        return new Point2D.Double(originX, originY);
     }
 
     public void setOrigin(double x, double y) {
-        ox = x;
-        oy = y;
+        originX = x;
+        originY = y;
     }
 
     public void setOrigin(Point2D origin) {
-        ox = origin.getX();
-        oy = origin.getY();
+        originX = origin.getX();
+        originY = origin.getY();
     }
 
     @Override
@@ -45,7 +47,6 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
     void internalRender(GameScene scene, Graphics2D g) {
         if (visible) {
             affineTransform.setToIdentity();
-            updateTransform(scene, affineTransform);
 
             Color c = g.getColor();
             Stroke s = g.getStroke();
@@ -54,6 +55,8 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
             g.setColor(color);
             g.setStroke(stroke);
 
+            prepare(scene, g, affineTransform);
+            updateTransform(scene, affineTransform);
             render(scene, g);
 
             g.setStroke(s);
@@ -62,12 +65,15 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
         }
     }
 
+    protected void prepare(GameScene scene, Graphics2D g, AffineTransform affineTransform) {
+    }
+
     protected abstract void render(GameScene scene, Graphics2D g);
 
     protected void updateTransform(GameScene scene, AffineTransform at) {
         if (gameObject != null) {
             Transform transform = gameObject.transform;
-            at.translate(-ox, -oy);
+            at.translate(-renderOriginX, -renderOriginY);
             at.preConcatenate(transform.globalTransform);
 
             Camera camera = scene.getCamera();

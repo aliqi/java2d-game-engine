@@ -15,16 +15,33 @@ public class StringRender extends GraphicsRender {
 
     public final Point2D offset = new Point2D.Double();
 
+    private Rectangle2D bounds;
+
     @Override
-    protected void render(GameScene scene, Graphics2D g) {
-        AffineTransform pt = g.getTransform();
+    protected void prepare(GameScene scene, Graphics2D g, AffineTransform affineTransform) {
+        if (text == null)
+            return;
 
         Font f = font;
 
         if (f == null)
             f = g.getFont();
 
-        Rectangle2D bounds = f.getStringBounds(text, g.getFontRenderContext());
+        bounds = f.getStringBounds(text, g.getFontRenderContext());
+        renderOriginX = bounds.getWidth() * originX;
+        renderOriginY = bounds.getHeight() * originY;
+    }
+
+    @Override
+    protected void render(GameScene scene, Graphics2D g) {
+        if (text == null)
+            return;
+
+        AffineTransform pt = g.getTransform();
+        Font f = font;
+
+        if (f == null)
+            f = g.getFont();
 
         g.setFont(f);
         g.transform(affineTransform);
