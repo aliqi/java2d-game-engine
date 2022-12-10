@@ -20,8 +20,6 @@ public class GameFrame extends Frame implements ComponentListener {
 
     private FramePaintThread paintThread;
 
-    private Insets insets;
-
     private int renderWidth;
 
     private int renderHeight;
@@ -33,6 +31,8 @@ public class GameFrame extends Frame implements ComponentListener {
     private boolean runnable = true;
 
     private Timer resizeThrottle;
+
+    Insets insets;
 
     public Dimension getRenderSize() {
         return new Dimension(renderWidth, renderHeight);

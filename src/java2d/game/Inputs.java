@@ -20,8 +20,17 @@ public class Inputs {
     }
 
     public static Point2D getMousePosition() {
-        if (frame == null) return new Point2D.Float();
-        return frame.getMousePosition();
+        if (frame == null)
+            return new Point2D.Float();
+
+        Point2D position = frame.getMousePosition();
+
+        if (position == null)
+            return null;
+
+        position.setLocation(position.getX() - frame.insets.left, position.getY() - frame.insets.top);
+
+        return position;
     }
 
     public static void addMouseEventListener(GameMouseEvent e) {

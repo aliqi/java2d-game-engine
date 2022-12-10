@@ -98,8 +98,9 @@ public class Game {
     }
 
     void render(Graphics2D g) {
-        if (scene != null && g != null)
+        if (scene != null && g != null) {
             scene.render(g);
+        }
     }
 
     public GameScene load(GameScene scene) {

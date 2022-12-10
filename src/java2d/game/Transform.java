@@ -74,8 +74,6 @@ public class Transform extends GameComponent {
         isDirty = true;
     }
 
-
-
     public Point2D getLocalScale() {
         return new Point2D.Double(sx, sy);
     }
