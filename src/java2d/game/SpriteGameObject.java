@@ -13,26 +13,16 @@ public class SpriteGameObject extends GameObject {
         return render == null ? null : render.sprite;
     }
 
-    public SpriteGameObject(String spritePath, double ratioX, double ratioY) {
-        this("SpriteGameObject", spritePath, ratioX, ratioY);
+    public void setSprite(Sprite sprite) {
+        SpriteRender render = getComponent(SpriteRender.class);
+
+        if (render != null)
+            render.sprite = sprite;
     }
 
-    public SpriteGameObject(String name, String spritePath, double ratioX, double ratioY) {
-        super(name);
-
-        SpriteRender spriteRender = SpriteRender.create(spritePath);
-
-        addComponent(spriteRender);
-
-        setOrigin(ratioX, ratioY);
-    }
-
-    public SpriteGameObject(String name, String spritePath, Point2D originRatio) {
-        this(name, spritePath, originRatio.getX(), originRatio.getY());
-    }
-
-    public SpriteGameObject(String name, String spritePath) {
-        this(name, spritePath, 0, 0);
+    public Point2D getOrigin() {
+        SpriteRender render = getComponent(SpriteRender.class);
+        return render == null ? new Point2D.Double() : render.getOrigin();
     }
 
     public void setOrigin(Point2D origin) {
@@ -40,16 +30,64 @@ public class SpriteGameObject extends GameObject {
     }
 
     public void setOrigin(double ox, double oy) {
-        SpriteRender render = getSpriteRender();
+        SpriteRender render = getComponent(SpriteRender.class);
 
         if (render != null)
             render.setOrigin(ox, oy);
     }
 
     public void setRenderOrder(int renderOrder) {
-        SpriteRender spriteRender = getSpriteRender();
+        SpriteRender render = getComponent(SpriteRender.class);
 
-        if (spriteRender != null)
-            spriteRender.setRenderOrder(renderOrder);
+        if (render != null)
+            render.setRenderOrder(renderOrder);
+    }
+
+    public int getRenderOrder() {
+        SpriteRender render = getComponent(SpriteRender.class);
+        return render == null ? 0 : render.getRenderOrder();
+    }
+
+    public SpriteGameObject(Sprite sprite) {
+        this(null, sprite, 0, 0);
+    }
+
+    public SpriteGameObject(String name, Sprite sprite) {
+        this(name, sprite, 0, 0);
+    }
+
+    public SpriteGameObject(Sprite sprite, double originX, double originY) {
+        this(null, sprite, originX, originY);
+    }
+
+    public SpriteGameObject(String name, Sprite sprite, double originX, double originY) {
+        this.name = name;
+
+        SpriteRender render = new SpriteRender();
+        render.sprite = sprite;
+        render.setOrigin(originX, originY);
+
+        addComponent(render);
+    }
+
+    public SpriteGameObject(String spritePath, double originX, double originY) {
+        this("SpriteGameObject", spritePath, originX, originY);
+    }
+
+    public SpriteGameObject(String name, String spritePath, double originX, double originY) {
+        super(name);
+
+        SpriteRender spriteRender = SpriteRender.create(spritePath);
+        spriteRender.setOrigin(originX, originY);
+
+        addComponent(spriteRender);
+    }
+
+    public SpriteGameObject(String name, String spritePath, Point2D origin) {
+        this(name, spritePath, origin.getX(), origin.getY());
+    }
+
+    public SpriteGameObject(String name, String spritePath) {
+        this(name, spritePath, 0, 0);
     }
 }
