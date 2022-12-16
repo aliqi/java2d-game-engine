@@ -114,6 +114,7 @@ public class Game {
             last.unloaded();
 
         if (scene != null) {
+            scene.game = this;
             scene.enabled = true;
             scene.active();
         }

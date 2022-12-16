@@ -48,6 +48,10 @@ public class SpriteGameObject extends GameObject {
         return render == null ? 0 : render.getRenderOrder();
     }
 
+    public SpriteGameObject() {
+        this(null);
+    }
+
     public SpriteGameObject(Sprite sprite) {
         this(null, sprite, 0, 0);
     }
