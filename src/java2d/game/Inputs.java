@@ -16,6 +16,8 @@ public class Inputs {
 
     static final List<GameMouseEvent> mouseEvents = new ArrayList<>();
 
+    private static Point2D lastPosition = new Point2D.Double();
+
     private Inputs() {
     }
 
@@ -26,9 +28,10 @@ public class Inputs {
         Point2D position = frame.getMousePosition();
 
         if (position == null)
-            return null;
+            return lastPosition;
 
         position.setLocation(position.getX() - frame.insets.left, position.getY() - frame.insets.top);
+        lastPosition = position;
 
         return position;
     }
