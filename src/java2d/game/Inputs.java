@@ -10,18 +10,21 @@ import java.util.Map;
 
 public class Inputs {
 
-    static GameFrame frame;
+    private final GameFrame frame;
 
-    static Map<Character, InputSystem.KeyState> keys = new HashMap<>();
+    final Map<Character, InputSystem.KeyState> keys = new HashMap<>();
 
-    static final List<GameMouseEvent> mouseEvents = new ArrayList<>();
+    final Map<Integer, InputSystem.KeyState> mouses = new HashMap<>();
 
-    private static Point2D lastPosition = new Point2D.Double();
+    final List<GameMouseEvent> mouseEvents = new ArrayList<>();
 
-    private Inputs() {
+    private Point2D lastPosition = new Point2D.Double();
+
+    Inputs(GameFrame frame) {
+        this.frame = frame;
     }
 
-    public static Point2D getMousePosition() {
+    public Point2D getMousePosition() {
         if (frame == null)
             return new Point2D.Float();
 
@@ -36,28 +39,43 @@ public class Inputs {
         return position;
     }
 
-    public static void addMouseEventListener(GameMouseEvent e) {
+    public void addMouseEventListener(GameMouseEvent e) {
         if (e != null)
             mouseEvents.add(e);
     }
 
-    public static void removeMouseEventListener(GameMouseEvent e) {
+    public void removeMouseEventListener(GameMouseEvent e) {
         if (e != null)
             mouseEvents.remove(e);
     }
 
-    public static boolean getKeyDown(char key) {
+    public boolean getKeyDown(char key) {
         InputSystem.KeyState state = keys.get(key);
         return state != null && state.pressed == InputSystem.STATE_TRIGGERED_ONCE;
     }
 
-    public static boolean getKey(char key) {
+    public boolean getKey(char key) {
         InputSystem.KeyState state = keys.get(key);
         return state != null && state.current == InputSystem.KEY_STATE_DOWN;
     }
 
-    public static boolean getKeyUp(char key) {
+    public boolean getKeyUp(char key) {
         InputSystem.KeyState state = keys.get(key);
         return state != null && state.released == InputSystem.STATE_TRIGGERED_ONCE;
+    }
+
+    public boolean getMouseButtonDown(int mouseButton) {
+        InputSystem.KeyState state = mouses.get(mouseButton);
+        return state != null && state.pressed == InputSystem.KEY_STATE_DOWN;
+    }
+
+    public boolean getMouseButton(int mouseButton) {
+        InputSystem.KeyState state = mouses.get(mouseButton);
+        return state != null && state.current == InputSystem.KEY_STATE_DOWN;
+    }
+
+    public boolean getMouseButtonUp(int mouseButton) {
+        InputSystem.KeyState state = mouses.get(mouseButton);
+        return state != null && state.released == InputSystem.KEY_STATE_UP;
     }
 }

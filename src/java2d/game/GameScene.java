@@ -11,7 +11,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameScene {
 
+    public final Canvas ui = new Canvas();
+
     public boolean enabled = true;
+
+    public boolean antialiasEnabled = true;
 
     public String name = "Scene";
 
@@ -21,7 +25,9 @@ public class GameScene {
 
     final List<GameObject> roots = new CopyOnWriteArrayList<>();
 
-    private final GraphicsRenderBatch graphicsRenderBatch;
+    private final GraphicsRenderBatch graphicsRenderBatch = new GraphicsRenderBatch();
+
+    private final CanvasRenderBatch canvasRenderBatch = new CanvasRenderBatch();
 
     private Camera camera;
 
@@ -42,12 +48,23 @@ public class GameScene {
     }
 
     public GameScene() {
-        graphicsRenderBatch = new GraphicsRenderBatch();
+        add(ui);
+    }
+
+    void setupAntialias(Graphics2D g) {
+        if (antialiasEnabled)
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        else
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     final void active() {
         if (!actived) {
             actived = true;
+
+            if (ui.space == Canvas.RenderSpace.Overlay)
+                ui.setSize(getGame().getRenderSize());
+
             active(roots);
             loaded();
         }
@@ -57,10 +74,12 @@ public class GameScene {
     }
 
     protected void unloaded() {
-        destroy();
     }
 
     public final void destroy() {
+        if (destroyed)
+            return;
+
         actived = false;
         destroyed = true;
 
@@ -68,6 +87,21 @@ public class GameScene {
             o.destroy();
 
         clean();
+    }
+
+    public final <T extends GameObject> List<T> findGameObjects(Class<T> c) {
+        List<T> list = new ArrayList<>();
+        for (GameObject o : roots)
+            if (c.isAssignableFrom(o.getClass()))
+                list.add((T) o);
+        return list;
+    }
+
+    public final <T extends GameObject> T findGameObject(Class<T> c) {
+        for (GameObject o : roots)
+            if (c.isAssignableFrom(o.getClass()))
+                return (T) o;
+        return null;
     }
 
     public final <T extends GameComponent> T findComponent(Class<T> c) {
@@ -148,24 +182,24 @@ public class GameScene {
         }
     }
 
-    static void active(GameObject... gameObject) {
+    void active(GameObject... gameObject) {
         Queue<GameObject> queue = new LinkedList<>();
         for (GameObject o : gameObject)
             queue.offer(o);
         active(queue);
     }
 
-    static void active(List<GameObject> objects) {
+    void active(List<GameObject> objects) {
         Queue<GameObject> queue = new LinkedList<>();
         for (GameObject o : objects)
             queue.offer(o);
         active(queue);
     }
 
-    static void active(Queue<GameObject> queue) {
+    void active(Queue<GameObject> queue) {
         while (queue.size() > 0) {
             GameObject o = queue.poll();
-            o.active();
+            o.active(this);
 
             for (GameObject c : o)
                 queue.offer(c);
@@ -205,7 +239,9 @@ public class GameScene {
     }
 
     final void render(Graphics2D g) {
-        if (actived)
+        if (actived) {
             graphicsRenderBatch.render(this, g);
+            canvasRenderBatch.render(this, g);
+        }
     }
 }

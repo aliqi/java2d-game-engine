@@ -51,6 +51,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
             Color c = g.getColor();
             Stroke s = g.getStroke();
             Font f = g.getFont();
+            AffineTransform pt = g.getTransform();
 
             g.setColor(color);
             g.setStroke(stroke);
@@ -59,6 +60,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
             updateTransform(scene, affineTransform);
             render(scene, g);
 
+            g.setTransform(pt);
             g.setStroke(s);
             g.setColor(c);
             g.setFont(f);
@@ -66,6 +68,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
     }
 
     protected void prepare(GameScene scene, Graphics2D g, AffineTransform affineTransform) {
+        scene.setupAntialias(g);
     }
 
     protected abstract void render(GameScene scene, Graphics2D g);
@@ -79,7 +82,7 @@ public abstract class GraphicsRender extends GameComponent implements RenderOrde
             Camera camera = scene.getCamera();
 
             if (camera != null)
-                at.preConcatenate(camera.getTransform());
+                at.preConcatenate(camera.getAffineTransform());
         }
     }
 }

@@ -1,7 +1,6 @@
 package java2d.game;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,6 @@ public class LineRender extends GraphicsRender {
 
     @Override
     protected void render(GameScene scene, Graphics2D g) {
-        AffineTransform pt = g.getTransform();
-
         if (space == Space.local)
             g.transform(affineTransform);
 
@@ -42,8 +39,5 @@ public class LineRender extends GraphicsRender {
                     g.drawLine((int) p.getX(), (int) p.getY(), (int) n.getX(), (int) n.getY());
             }
         }
-
-        if (space == Space.local)
-            g.setTransform(pt);
     }
 }

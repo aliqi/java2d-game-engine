@@ -17,6 +17,8 @@ public class Game {
 
     public final GameConfig config = new GameConfig();
 
+    public final Inputs inputs;
+
     private final GameFrame frame;
 
     private final Properties ps = new Properties();
@@ -42,6 +44,7 @@ public class Game {
     public Game() {
         frame = new GameFrame(this);
         inputSystem = new InputSystem(frame);
+        inputs = inputSystem.inputs;
 
         setupFrameEvents();
         loadConfig();
@@ -110,8 +113,10 @@ public class Game {
         GameScene last = this.scene;
         this.scene = scene;
 
-        if (last != null)
+        if (last != null) {
             last.unloaded();
+            last.destroy();
+        }
 
         if (scene != null) {
             scene.game = this;

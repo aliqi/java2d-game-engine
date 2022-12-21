@@ -11,6 +11,8 @@ public class StringRender extends GraphicsRender {
 
     public Font font;
 
+    public boolean antialiasEnabled = true;
+
     public boolean boundsVisible = false;
 
     public final Point2D offset = new Point2D.Double();
@@ -27,6 +29,7 @@ public class StringRender extends GraphicsRender {
         if (f == null)
             f = g.getFont();
 
+        setupTextAntialias(g, antialiasEnabled);
         bounds = f.getStringBounds(text, g.getFontRenderContext());
         renderOriginX = bounds.getWidth() * originX;
         renderOriginY = bounds.getHeight() * originY;
@@ -37,7 +40,6 @@ public class StringRender extends GraphicsRender {
         if (text == null)
             return;
 
-        AffineTransform pt = g.getTransform();
         Font f = font;
 
         if (f == null)
@@ -50,7 +52,14 @@ public class StringRender extends GraphicsRender {
         if (boundsVisible)
             g.drawRect((int) Math.floor(offset.getX()), (int) Math.floor(offset.getY()),
                     (int) Math.ceil(bounds.getWidth()), (int) Math.ceil(bounds.getHeight()));
+    }
 
-        g.setTransform(pt);
+    public static void setupTextAntialias(Graphics2D g, boolean enabled) {
+        if (g != null) {
+            if (enabled)
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            else
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        }
     }
 }

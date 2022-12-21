@@ -12,6 +12,14 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     GameObject gameObject;
 
+    public Inputs getInputs() {
+        return gameObject == null ? null : gameObject.getInputs();
+    }
+
+    public GameScene getScene() {
+        return gameObject == null ? null : gameObject.getScene();
+    }
+
     public int getUpdateOrder() {
         return updateOrder;
     }
@@ -27,6 +35,10 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     public GameObject getGameObject() {
         return gameObject;
+    }
+
+    public Transform getTransform() {
+        return gameObject == null ? null : gameObject.transform;
     }
 
     public <T extends GameComponent> T getComponent(Class<T> c) {
@@ -51,7 +63,7 @@ public abstract class GameComponent implements Comparable<GameComponent> {
     }
 
     protected void destroy() {
-        Game.debug("Component ["+ gameObject.name + "] destroyed: " + this);
+        Game.debug("Component [" + gameObject.name + "] destroyed: " + this);
     }
 
     protected void update() {

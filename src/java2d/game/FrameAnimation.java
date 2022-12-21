@@ -83,8 +83,6 @@ public class FrameAnimation extends GameComponent {
 
                     if (completed != null)
                         completed.completed();
-
-                    System.out.println((System.nanoTime() - elasped));
                 }
             } else
                 timer += Time.deltaTime;

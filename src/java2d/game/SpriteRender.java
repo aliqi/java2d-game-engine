@@ -30,7 +30,9 @@ public class SpriteRender extends GraphicsRender {
 
     @Override
     protected void render(GameScene scene, Graphics2D g) {
-        if (sprite != null)
-            g.drawImage(sprite.getImage(), affineTransform, null);
+        if (sprite != null) {
+            g.transform(affineTransform);
+            g.drawImage(sprite.getImage(), 0, 0, null);
+        }
     }
 }

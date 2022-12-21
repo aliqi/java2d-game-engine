@@ -2,6 +2,9 @@
 // Create at: 2022/4/16
 package java2d.game;
 
+import java.awt.*;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -21,10 +24,16 @@ public class GameObject implements Iterable<GameObject> {
 
     private GameObject parent;
 
+    private GameScene scene;
+
     boolean actived, destroyed;
 
     public boolean compareTag(String tag) {
         return Strings.equals(this.tag, tag);
+    }
+
+    public Inputs getInputs() {
+        return scene == null ? null : scene.game.inputs;
     }
 
     public GameObject getParent() {
@@ -33,6 +42,10 @@ public class GameObject implements Iterable<GameObject> {
 
     public int getChildCount() {
         return objects.size();
+    }
+
+    public GameScene getScene() {
+        return scene;
     }
 
     public GameObject() {
@@ -60,6 +73,10 @@ public class GameObject implements Iterable<GameObject> {
 
         for (GameObject o : objects)
             o.destroy();
+
+        onDestroyed();
+
+        this.scene = null;
     }
 
     final void finalDestroy() {
@@ -70,7 +87,12 @@ public class GameObject implements Iterable<GameObject> {
             o.finalDestroy();
     }
 
+    protected void onUpdate() {
+    }
+
     void update() {
+        onUpdate();
+
         for (GameComponent c : components)
             if (c.actived && c.enabled) c.update();
 
@@ -78,7 +100,12 @@ public class GameObject implements Iterable<GameObject> {
             if (o.enabled) o.update();
     }
 
+    protected void onLateUpdate() {
+    }
+
     void lateUpdate() {
+        onLateUpdate();
+
         for (GameComponent c : components)
             if (c.actived && c.enabled) c.lateUpdate();
 
@@ -97,15 +124,28 @@ public class GameObject implements Iterable<GameObject> {
         return objects.get(index);
     }
 
-    final void active() {
+    final void active(GameScene scene) {
         if (!actived) {
+            this.scene = scene;
             actived = true;
 
             Collections.sort(components);
 
             for (GameComponent c : components)
                 c.active();
+
+            onActivated();
         }
+    }
+
+    protected void onActivated() {
+    }
+
+    protected void onDestroyed() {
+    }
+
+    void setupAntialias(Graphics2D g) {
+        getScene().setupAntialias(g);
     }
 
     public void add(GameObject child) {
@@ -119,7 +159,7 @@ public class GameObject implements Iterable<GameObject> {
         if (!objects.contains(child)) {
             child.parent = this;
             objects.add(child);
-            if (actived) GameScene.active(child);
+            if (actived) scene.active(child);
         }
     }
 

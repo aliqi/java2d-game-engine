@@ -1,7 +1,6 @@
 package java2d.game;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 public class CircleRender extends GraphicsRender {
@@ -20,12 +19,7 @@ public class CircleRender extends GraphicsRender {
         int length = radius * 2;
         Point2D center = getLocalCenter();
 
-        AffineTransform pt = g.getTransform();
-
         g.transform(affineTransform);
-
         g.drawOval((int) center.getX(), (int) center.getY(), length, length);
-
-        g.setTransform(pt);
     }
 }

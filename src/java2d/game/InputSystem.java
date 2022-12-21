@@ -20,12 +20,14 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
     static final int STATE_TRIGGERED_ONCE = 1;
     static final int STATE_TRIGGERED = 2;
 
+    public final Inputs inputs;
+
     InputSystem(GameFrame frame) {
-        Inputs.frame = frame;
+        inputs = new Inputs(frame);
     }
 
     void beforeUpdateKeys() {
-        for (KeyState state : Inputs.keys.values()) {
+        for (KeyState state : inputs.keys.values()) {
             state.current = state.send;
 
             if (state.pressed == STATE_NONE && state.current == KEY_STATE_DOWN)
@@ -37,7 +39,7 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
     }
 
     void afterUpdateKeys() {
-        for (KeyState state : Inputs.keys.values()) {
+        for (KeyState state : inputs.keys.values()) {
             if (state.pressed == STATE_TRIGGERED_ONCE)
                 state.pressed = STATE_TRIGGERED;
 
@@ -50,16 +52,20 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
             if (state.send == KEY_STATE_DOWN)
                 state.released = STATE_NONE;
         }
+
+        for (KeyState state : inputs.mouses.values())
+            if (state.released == KEY_STATE_UP)
+                state.current = state.pressed = state.released = STATE_NONE;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         char c = e.getKeyChar();
-        KeyState state = Inputs.keys.get(c);
+        KeyState state = inputs.keys.get(c);
 
         if (state == null) {
             state = new KeyState();
-            Inputs.keys.put(c, state);
+            inputs.keys.put(c, state);
         }
 
         state.send = KEY_STATE_DOWN;
@@ -68,7 +74,7 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
     @Override
     public void keyReleased(KeyEvent e) {
         char c = e.getKeyChar();
-        KeyState state = Inputs.keys.get(c);
+        KeyState state = inputs.keys.get(c);
 
         if (state != null)
             state.send = KEY_STATE_UP;
@@ -80,13 +86,32 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        for (GameMouseEvent me : Inputs.mouseEvents)
+        int button = e.getButton();
+        KeyState state = inputs.mouses.get(button);
+
+        if (state == null) {
+            state = new KeyState();
+            inputs.mouses.put(button, state);
+        }
+
+        state.pressed = KEY_STATE_DOWN;
+        state.current = KEY_STATE_DOWN;
+
+        for (GameMouseEvent me : inputs.mouseEvents)
             me.mousePressed(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        for (GameMouseEvent me : Inputs.mouseEvents)
+        int button = e.getButton();
+        KeyState state = inputs.mouses.get(button);
+
+        if (state != null) {
+            state.released = KEY_STATE_UP;
+            state.current = KEY_STATE_UP;
+        }
+
+        for (GameMouseEvent me : inputs.mouseEvents)
             me.mouseReleased(e);
     }
 

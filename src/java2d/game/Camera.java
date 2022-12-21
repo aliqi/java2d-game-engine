@@ -5,17 +5,17 @@ import java.awt.geom.AffineTransform;
 @Unique
 public class Camera extends GameComponent {
 
-    private final AffineTransform transform = new AffineTransform();
+    private final AffineTransform affineTransform = new AffineTransform();
 
     public void updateTransform() {
         AffineTransform t = gameObject.transform.globalTransform;
-        transform.setTransform(t);
-        transform.setTransform(t.getScaleX(), -t.getShearY(),
+        affineTransform.setTransform(t);
+        affineTransform.setTransform(t.getScaleX(), -t.getShearY(),
                 -t.getShearX(), t.getScaleY(),
                 -t.getTranslateX(), -t.getTranslateY());
     }
 
-    public AffineTransform getTransform() {
-        return transform;
+    public AffineTransform getAffineTransform() {
+        return affineTransform;
     }
 }
