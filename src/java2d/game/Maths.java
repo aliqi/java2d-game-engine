@@ -21,6 +21,16 @@ public interface Maths {
         return new Point2D.Double(p.getX() * v, p.getY() * v);
     }
 
+    static Point2D add(Point2D src, Point2D target) {
+        return new Point2D.Double(src.getX() + target.getX(),
+                src.getY() + target.getY());
+    }
+
+    static Point2D subtract(Point2D src, Point2D target) {
+        return new Point2D.Double(src.getX() - target.getX(),
+                src.getY() - target.getY());
+    }
+
     static int clamp(int value, int min, int max) {
         if (min > max) {
             int temp = max;
