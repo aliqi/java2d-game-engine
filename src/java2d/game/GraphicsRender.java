@@ -6,6 +6,8 @@ import java.awt.geom.Point2D;
 
 public abstract class GraphicsRender extends GameComponent implements RenderOrderable {
 
+    public static final Color transparent = new Color(0, 0, 0, 0);
+
     public boolean visible = true;
 
     public BasicStroke stroke = new BasicStroke(1f);

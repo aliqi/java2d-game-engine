@@ -68,6 +68,10 @@ public class StringGameObject extends GameObject {
         addComponent(new StringRender());
     }
 
+    public StringGameObject(String text) {
+        this(text, Color.lightGray);
+    }
+
     public StringGameObject(String text, Color color) {
         StringRender render = new StringRender();
         render.text = text;

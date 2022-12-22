@@ -19,6 +19,16 @@ public class StringRender extends GraphicsRender {
 
     private Rectangle2D bounds;
 
+    public static Rectangle2D calculateBounds(String content, Graphics2D g, Font f) {
+        var context = g.getFontRenderContext();
+        var bounds = f.getStringBounds(content, context);
+        var lineMetrics = f.getLineMetrics(content, context);
+        var baselineOffset = Math.abs(lineMetrics.getStrikethroughOffset());
+
+        bounds.setRect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight() - baselineOffset);
+        return bounds;
+    }
+
     @Override
     protected void prepare(GameScene scene, Graphics2D g, AffineTransform affineTransform) {
         if (text == null)
@@ -30,7 +40,7 @@ public class StringRender extends GraphicsRender {
             f = g.getFont();
 
         setupTextAntialias(g, antialiasEnabled);
-        bounds = f.getStringBounds(text, g.getFontRenderContext());
+        bounds = calculateBounds(text, g, f);
         renderOriginX = bounds.getWidth() * originX;
         renderOriginY = bounds.getHeight() * originY;
     }

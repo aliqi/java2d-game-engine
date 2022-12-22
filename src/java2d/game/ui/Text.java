@@ -23,6 +23,8 @@ public class Text extends UIElement {
 
     private Rectangle2D bounds;
 
+    private float baselineOffset;
+
     @Override
     protected void onPrepare(Graphics2D g) {
         Font f = font;
@@ -31,7 +33,7 @@ public class Text extends UIElement {
             f = g.getFont();
 
         StringRender.setupTextAntialias(g, antialiasEnabled);
-        bounds = f.getStringBounds(content, g.getFontRenderContext());
+        bounds = StringRender.calculateBounds(content, g, f);
         setSize((int) bounds.getWidth(), (int) bounds.getHeight());
     }
 
@@ -47,7 +49,9 @@ public class Text extends UIElement {
 
         g.setColor(color);
         g.setFont(f);
-        g.drawString(content, (int) offset.getX(), (int) (offset.getY() + bounds.getHeight()));
+
+        g.drawString(content, (int) offset.getX(),
+                (int) (offset.getY() + bounds.getHeight()));
 
         if (boundsVisible)
             g.drawRect((int) Math.floor(offset.getX()), (int) Math.floor(offset.getY()),

@@ -14,7 +14,7 @@ public class GameFrame extends Frame implements ComponentListener {
 
     private Image bufferImage;
 
-    private Graphics bufferGraphics;
+    private Graphics2D bufferGraphics;
 
     private final Game game;
 
@@ -87,7 +87,7 @@ public class GameFrame extends Frame implements ComponentListener {
         if (bufferImage == null) {
             calculateSize();
             bufferImage = createImage(renderWidth, renderHeight);
-            bufferGraphics = bufferImage.getGraphics();
+            bufferGraphics = (Graphics2D) bufferImage.getGraphics();
         }
     }
 
@@ -104,8 +104,8 @@ public class GameFrame extends Frame implements ComponentListener {
         if (isOpened && runnable) {
             prepareBuffer();
 
-            bufferGraphics.setColor(getBackground());
-            bufferGraphics.fillRect(0, 0, size.width, size.height);
+            bufferGraphics.setBackground(getBackground());
+            bufferGraphics.clearRect(0, 0, size.width, size.height);
 
             paint(bufferGraphics);
 

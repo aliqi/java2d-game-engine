@@ -5,12 +5,8 @@ import java2d.game.UIElement;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 
 public class Button extends UIElement {
-
-    public ClickedEvent clickedEvent;
 
     public Image normal;
 
@@ -26,9 +22,11 @@ public class Button extends UIElement {
 
     private Inputs inputs;
 
+    private boolean isMouseOver;
+
     public Button() {
         resetSize();
-        setupText();
+        setup();
     }
 
     public Button(Image normal) {
@@ -36,10 +34,12 @@ public class Button extends UIElement {
             this.normal = normal;
             resetSize();
         }
-        setupText();
+        setup();
     }
 
-    private void setupText() {
+    private void setup() {
+        backgroundColor = Color.lightGray;
+
         text.origin.setLocation(0.5, 0.5);
         text.content = "Button";
         text.transform.setPosition(getWidth() * 0.5, getHeight() * 0.5);
@@ -61,50 +61,29 @@ public class Button extends UIElement {
 
     @Override
     protected void onRender(Graphics2D g) {
-        if (image != null)
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), backgroundColor, null);
+        if (!isMouseOver)
+            image = normal;
+
+        if (image == null)
+            drawBackground(g);
+        else
+            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+
         drawBorder(g);
     }
 
     @Override
-    protected void onUpdate() {
-        if (overlap(inputs.getMousePosition())) {
-            if (inputs.getMouseButtonDown(MouseButton)) {
-                if (pressed != null)
-                    image = pressed;
-            } else {
-                if (hover != null)
-                    image = hover;
-            }
+    protected void onMouseOver() {
+        isMouseOver = true;
 
-            if (inputs.getMouseButtonUp(MouseButton)) {
-                image = normal;
-                onClicked();
-
-                if (clickedEvent != null)
-                    clickedEvent.clicked(this);
-            }
-        } else
-            image = normal;
+        if (inputs.getMouseButton(MouseButton))
+            image = pressed == null ? normal : pressed;
+        else
+            image = hover == null ? normal : hover;
     }
 
-    protected void onClicked() {
-    }
-
-    protected boolean overlap(Point2D point) {
-        try {
-            affineTransform.inverseTransform(point, point);
-
-            return point.getX() >= 0 && point.getX() <= getWidth() &&
-                    point.getY() >= 0 && point.getY() <= getHeight();
-        } catch (NoninvertibleTransformException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FunctionalInterface
-    public interface ClickedEvent {
-
-        void clicked(Button button);
+    @Override
+    protected void onMouseExit() {
+        isMouseOver = false;
     }
 }

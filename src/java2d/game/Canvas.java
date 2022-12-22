@@ -9,12 +9,12 @@ public final class Canvas extends UIElement {
 
     boolean rendered;
 
-    private Image canvasImage;
+    private BufferedImage canvasImage;
 
     private Graphics2D canvasGraphics;
 
     public Canvas() {
-        backgroundColor = borderColor = new Color(0, 0, 0, 0);
+        backgroundColor = borderColor = GraphicsRender.transparent;
     }
 
     @Override
@@ -56,7 +56,7 @@ public final class Canvas extends UIElement {
                 affineTransform.preConcatenate(camera.getAffineTransform());
         }
 
-        g.drawImage(canvasImage, affineTransform, null);
+        g.drawRenderedImage(canvasImage, affineTransform);
     }
 
     private void prepare() {
@@ -66,6 +66,11 @@ public final class Canvas extends UIElement {
             prepare(null, canvasGraphics);
         else if (space == RenderSpace.World)
             prepare(this, canvasGraphics);
+    }
+
+    @Override
+    protected void onRender(Graphics2D g) {
+        drawBackground(g);
     }
 
     void renderElement(Graphics2D g) {

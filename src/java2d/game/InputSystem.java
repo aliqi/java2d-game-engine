@@ -53,9 +53,13 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
                 state.released = STATE_NONE;
         }
 
-        for (KeyState state : inputs.mouses.values())
+        for (KeyState state : inputs.mouses.values()) {
+            if (state.pressed == KEY_STATE_DOWN)
+                state.pressed = STATE_NONE;
+
             if (state.released == KEY_STATE_UP)
                 state.current = state.pressed = state.released = STATE_NONE;
+        }
     }
 
     @Override

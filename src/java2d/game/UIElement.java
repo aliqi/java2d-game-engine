@@ -1,13 +1,27 @@
 package java2d.game;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public abstract class UIElement extends GameObject {
+
+    public MouseEnterEvent mouseEnterEvent;
+
+    public MouseExitEvent mouseExitEvent;
+
+    public MouseOverEvent mouseOverEvent;
+
+    public MouseButtonDownEvent mouseButtonDownEvent;
+
+    public MouseButtonUpEvent mouseButtonUpEvent;
+
+    public ClickedEvent clickedEvent;
 
     public boolean visible = true;
 
@@ -25,7 +39,11 @@ public abstract class UIElement extends GameObject {
 
     private Stroke stroke = new BasicStroke(borderThickness);
 
+    private boolean isMouseOverlapping;
+
     private final List<UIElement> elements = new ArrayList<>();
+
+    private final boolean[] mouseButtonDownMap = new boolean[MouseEvent.BUTTON3];
 
     protected final AffineTransform affineTransform = new AffineTransform();
 
@@ -76,6 +94,98 @@ public abstract class UIElement extends GameObject {
     protected void onSizeChanged() {
     }
 
+    protected void onMouseEnter() {
+    }
+
+    protected void onMouseExit() {
+    }
+
+    protected void onMouseOver() {
+    }
+
+    protected void onMouseButtonDown(int mouseButton) {
+    }
+
+    protected void onMouseButtonUp(int mouseButton) {
+    }
+
+    @Override
+    protected void onUpdate() {
+        Inputs inputs = getInputs();
+
+        if (overlap(inputs.getMousePosition())) {
+            raiseMouseEnterEvent();
+            raiseMouseOverEvent();
+            handleMouseButtonDown(inputs);
+            handleMouseButtonUp(inputs);
+        } else {
+            raiseMouseExitEvent();
+        }
+    }
+
+    private void handleMouseButtonUp(Inputs inputs) {
+        for (int i = MouseEvent.BUTTON1; i <= MouseEvent.BUTTON3; i++) {
+            if (inputs.getMouseButtonUp(i)) {
+                onMouseButtonUp(i);
+
+                if (mouseButtonUpEvent != null)
+                    mouseButtonUpEvent.mouseButtonUp(this, i);
+
+                raiseOnClickEvent(i);
+            }
+        }
+    }
+
+    private void handleMouseButtonDown(Inputs inputs) {
+        for (int i = MouseEvent.BUTTON1; i <= MouseEvent.BUTTON3; i++) {
+            if (inputs.getMouseButtonDown(i)) {
+                mouseButtonDownMap[i - 1] = true;
+                onMouseButtonDown(i);
+
+                if (mouseButtonDownEvent != null)
+                    mouseButtonDownEvent.mouseButtonDown(this, i);
+            }
+        }
+    }
+
+    private void raiseOnClickEvent(int i) {
+        if (mouseButtonDownMap[i - 1]) {
+            mouseButtonDownMap[i - 1] = false;
+
+            onClicked(i);
+
+            if (clickedEvent != null)
+                clickedEvent.clicked(this, i);
+        }
+    }
+
+    private void raiseMouseExitEvent() {
+        if (isMouseOverlapping) {
+            isMouseOverlapping = false;
+            onMouseExit();
+
+            if (mouseExitEvent != null)
+                mouseExitEvent.mouseExit(this);
+        }
+    }
+
+    private void raiseMouseOverEvent() {
+        onMouseOver();
+
+        if (mouseOverEvent != null)
+            mouseOverEvent.mouseOver(this);
+    }
+
+    private void raiseMouseEnterEvent() {
+        if (!isMouseOverlapping) {
+            isMouseOverlapping = true;
+            onMouseEnter();
+
+            if (mouseEnterEvent != null)
+                mouseEnterEvent.mouseEnter(this);
+        }
+    }
+
     protected void onPrepare(Graphics2D g) {
     }
 
@@ -108,6 +218,17 @@ public abstract class UIElement extends GameObject {
         drawBorder(g);
     }
 
+    protected boolean overlap(Point2D point) {
+        try {
+            affineTransform.inverseTransform(point, point);
+
+            return point.getX() >= 0 && point.getX() <= getWidth() &&
+                    point.getY() >= 0 && point.getY() <= getHeight();
+        } catch (NoninvertibleTransformException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected void drawBorder(Graphics2D g) {
         if (borderThickness > 0) {
             g.setColor(borderColor);
@@ -121,8 +242,8 @@ public abstract class UIElement extends GameObject {
     }
 
     protected void drawBackground(Graphics2D g) {
-        g.setColor(backgroundColor);
-        g.fillRect(0, 0, size.width, size.height);
+        g.setBackground(backgroundColor);
+        g.clearRect(0, 0, size.width, size.height);
     }
 
     void renderElement(Graphics2D g) {
@@ -160,5 +281,44 @@ public abstract class UIElement extends GameObject {
         g.setStroke(s);
         g.setColor(c);
         g.setFont(f);
+    }
+
+    protected void onClicked(int mouseButton) {
+    }
+
+    @FunctionalInterface
+    public interface MouseEnterEvent {
+
+        void mouseEnter(UIElement element);
+    }
+
+    @FunctionalInterface
+    public interface MouseExitEvent {
+
+        void mouseExit(UIElement element);
+    }
+
+    @FunctionalInterface
+    public interface MouseOverEvent {
+
+        void mouseOver(UIElement element);
+    }
+
+    @FunctionalInterface
+    public interface ClickedEvent {
+
+        void clicked(UIElement element, int mouseButton);
+    }
+
+    @FunctionalInterface
+    public interface MouseButtonDownEvent {
+
+        void mouseButtonDown(UIElement element, int mouseButton);
+    }
+
+    @FunctionalInterface
+    public interface MouseButtonUpEvent {
+
+        void mouseButtonUp(UIElement element, int mouseButton);
     }
 }
