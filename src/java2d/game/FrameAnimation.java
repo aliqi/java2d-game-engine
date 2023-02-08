@@ -20,8 +20,6 @@ public class FrameAnimation extends GameComponent {
             play(frames.totalTime);
     }
 
-    private long elasped;
-
     public void play(float fixedTotalTime) {
         if (frames != null) {
             for (SpriteFrame f : frames.values)
@@ -29,7 +27,19 @@ public class FrameAnimation extends GameComponent {
         }
 
         isPlaying = true;
-        elasped = System.nanoTime();
+    }
+
+    public void playInterval(float interval) {
+        if (frames != null) {
+            float total = 0;
+
+            for (SpriteFrame f : frames.values) {
+                f.animatingTime = total;
+                total += interval;
+            }
+        }
+
+        isPlaying = true;
     }
 
     public void pause() {
@@ -60,6 +70,7 @@ public class FrameAnimation extends GameComponent {
                 return c;
 
             frameIndex = i;
+            c = n;
         }
 
         return frames.values[frameIndex];
