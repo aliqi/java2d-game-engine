@@ -67,4 +67,25 @@ public interface Maths {
         double length = point.distance(0, 0);
         point.setLocation(point.getX() / length, point.getY() / length);
     }
+
+    static Point2D normalized(Point2D point) {
+        Point2D n = new Point2D.Double(point.getX(), point.getY());
+        normalize(n);
+        return n;
+    }
+
+    static void setLength(Point2D point, double length) {
+        normalize(point);
+        point.setLocation(point.getX() * length, point.getY() * length);
+    }
+
+    static Point2D newLength(Point2D point, double length) {
+        Point2D result = clone(point);
+        setLength(result, length);
+        return result;
+    }
+
+    static Point2D clone(Point2D point) {
+        return new Point2D.Double(point.getX(), point.getY());
+    }
 }
