@@ -2,6 +2,8 @@ package java2d.game;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 
 @Unique
 public class Camera extends GameComponent {
@@ -22,5 +24,16 @@ public class Camera extends GameComponent {
 
     public AffineTransform getAffineTransform() {
         return affineTransform;
+    }
+
+    public Point2D screenToWorldPoint(Point2D point) {
+        Point2D result = new Point2D.Double();
+        try {
+            affineTransform.inverseTransform(point, result);
+        } catch (NoninvertibleTransformException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
     }
 }

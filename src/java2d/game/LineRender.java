@@ -20,6 +20,12 @@ public class LineRender extends GraphicsRender {
     protected void render(GameScene scene, Graphics2D g) {
         if (space == Space.local)
             g.transform(affineTransform);
+        else if (space == Space.world) {
+            Camera camera = scene.getCamera();
+
+            if (!isDestroyed(camera))
+                g.transform(camera.getAffineTransform());
+        }
 
         int size = points.size();
         int last = size - 1;

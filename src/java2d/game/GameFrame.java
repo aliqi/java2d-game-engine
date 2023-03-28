@@ -34,6 +34,10 @@ public class GameFrame extends Frame implements ComponentListener {
 
     Insets insets;
 
+    public Game getGame() {
+        return game;
+    }
+
     public Dimension getRenderSize() {
         return new Dimension(renderWidth, renderHeight);
     }

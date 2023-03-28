@@ -28,6 +28,10 @@ public class GameObject implements Iterable<GameObject> {
 
     boolean activated, destroyed;
 
+    public static boolean isDestroyed(GameComponent component) {
+        return component == null || component.isDestroyed();
+    }
+
     public static boolean isDestroyed(GameObject obj) {
         return obj == null || obj.isDestroyed();
     }

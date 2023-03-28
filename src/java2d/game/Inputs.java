@@ -26,6 +26,10 @@ public class Inputs {
         this.frame = frame;
     }
 
+    public Point2D getWorldMousePosition() {
+        return frame.getGame().getScene().getCamera().screenToWorldPoint(getMousePosition());
+    }
+
     public Point2D getMousePosition() {
         if (frame == null)
             return new Point2D.Float();

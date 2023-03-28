@@ -28,6 +28,10 @@ public abstract class GameComponent implements Comparable<GameComponent> {
         return destroyed;
     }
 
+    public static boolean isDestroyed(GameComponent component) {
+        return GameObject.isDestroyed(component);
+    }
+
     public static boolean isDestroyed(GameObject obj) {
         return GameObject.isDestroyed(obj);
     }
