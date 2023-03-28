@@ -27,6 +27,8 @@ class InputSystem implements KeyListener, MouseListener, MouseWheelListener {
     }
 
     void beforeUpdateKeys() {
+        inputs.overUI = false;
+
         for (KeyState state : inputs.keys.values()) {
             state.current = state.send;
 

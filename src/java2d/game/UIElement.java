@@ -222,8 +222,14 @@ public abstract class UIElement extends GameObject {
         try {
             affineTransform.inverseTransform(point, point);
 
-            return point.getX() >= 0 && point.getX() <= getWidth() &&
+            boolean result = point.getX() >= 0 && point.getX() <= getWidth() &&
                     point.getY() >= 0 && point.getY() <= getHeight();
+
+            if (getParent() != null && result)
+                getInputs().overUI = true;
+
+            return result;
+
         } catch (NoninvertibleTransformException e) {
             throw new RuntimeException(e);
         }

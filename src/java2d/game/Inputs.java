@@ -20,6 +20,8 @@ public class Inputs {
 
     private Point2D lastPosition = new Point2D.Double();
 
+    boolean overUI;
+
     Inputs(GameFrame frame) {
         this.frame = frame;
     }
@@ -47,6 +49,10 @@ public class Inputs {
     public void removeMouseEventListener(GameMouseEvent e) {
         if (e != null)
             mouseEvents.remove(e);
+    }
+
+    public boolean isOverUI() {
+        return overUI;
     }
 
     public boolean getKeyDown(char key) {

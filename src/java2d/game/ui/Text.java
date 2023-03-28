@@ -23,8 +23,6 @@ public class Text extends UIElement {
 
     private Rectangle2D bounds;
 
-    private float baselineOffset;
-
     @Override
     protected void onPrepare(Graphics2D g) {
         Font f = font;

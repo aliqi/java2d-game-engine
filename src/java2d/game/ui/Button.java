@@ -51,6 +51,8 @@ public class Button extends UIElement {
             setSize(200, 100);
         else
             setSize(normal.getWidth(null), normal.getHeight(null));
+
+        System.out.println(getSize());
     }
 
     @Override
