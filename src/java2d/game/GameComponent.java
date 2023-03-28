@@ -8,7 +8,7 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     private int updateOrder = 0;
 
-    boolean actived, destroyed;
+    boolean activated, destroyed;
 
     GameObject gameObject;
 
@@ -18,6 +18,22 @@ public abstract class GameComponent implements Comparable<GameComponent> {
 
     public GameScene getScene() {
         return gameObject == null ? null : gameObject.getScene();
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public static boolean isDestroyed(GameObject obj) {
+        return GameObject.isDestroyed(obj);
+    }
+
+    public static boolean isDestroyed(Transform transform) {
+        return GameObject.isDestroyed(transform);
     }
 
     public int getUpdateOrder() {
@@ -46,8 +62,8 @@ public abstract class GameComponent implements Comparable<GameComponent> {
     }
 
     final void active() {
-        if (!actived) {
-            actived = true;
+        if (!activated) {
+            activated = true;
             awake();
         }
     }
@@ -58,7 +74,7 @@ public abstract class GameComponent implements Comparable<GameComponent> {
     }
 
     final void beginDestroy() {
-        actived = false;
+        activated = false;
         destroyed = true;
     }
 

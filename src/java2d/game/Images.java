@@ -12,6 +12,10 @@ public interface Images {
 
     static Image loadFromClasspath(String path) {
         Game.debug("load classpath image: " + path);
+
+        if (Strings.isBlank(path))
+            return null;
+
         try (InputStream inputStream = Images.class.getClassLoader().getResourceAsStream(path)) {
             return inputStream == null ? null : ImageIO.read(inputStream);
         } catch (IOException e) {
@@ -20,8 +24,13 @@ public interface Images {
     }
 
     static Image loadFromPath(String path) {
+        Game.debug("load image: " + path);
+
+        if (Strings.isBlank(path))
+            return null;
+
         File file = new File(path);
-        Game.debug("load image: " + file.getAbsolutePath());
+
         try {
             return ImageIO.read(file);
         } catch (IOException e) {
@@ -30,6 +39,9 @@ public interface Images {
     }
 
     static Image load(String path) {
+        if (Strings.isBlank(path))
+            return null;
+
         String clsp = "classpath:";
         if (path.startsWith(clsp))
             return loadFromClasspath(path.substring(clsp.length()));

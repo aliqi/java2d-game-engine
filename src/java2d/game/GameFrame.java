@@ -79,6 +79,7 @@ public class GameFrame extends Frame implements ComponentListener {
     public void paint(Graphics g) {
         if (isOpened && runnable) {
             game.update();
+            game.lateUpdate();
             game.render((Graphics2D) g);
         }
     }

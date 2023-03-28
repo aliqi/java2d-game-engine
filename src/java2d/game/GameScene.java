@@ -228,14 +228,16 @@ public class GameScene {
                     o.update();
 
             clean();
-
-            for (GameObject o : roots)
-                if (o.enabled)
-                    o.lateUpdate();
-
-            if (camera != null)
-                camera.updateTransform();
         }
+    }
+
+    void lateUpdate() {
+        for (GameObject o : roots)
+            if (o.enabled)
+                o.lateUpdate();
+
+        if (camera != null)
+            camera.updateTransform();
     }
 
     final void render(Graphics2D g) {

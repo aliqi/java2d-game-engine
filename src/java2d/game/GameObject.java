@@ -26,7 +26,23 @@ public class GameObject implements Iterable<GameObject> {
 
     private GameScene scene;
 
-    boolean actived, destroyed;
+    boolean activated, destroyed;
+
+    public static boolean isDestroyed(GameObject obj) {
+        return obj == null || obj.isDestroyed();
+    }
+
+    public static boolean isDestroyed(Transform transform) {
+        return transform == null || transform.getGameObject().isDestroyed();
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
 
     public boolean compareTag(String tag) {
         return Strings.equals(this.tag, tag);
@@ -66,7 +82,7 @@ public class GameObject implements Iterable<GameObject> {
         if (destroyed) return;
 
         destroyed = true;
-        actived = false;
+        activated = false;
 
         for (GameComponent c : components)
             c.beginDestroy();
@@ -94,7 +110,7 @@ public class GameObject implements Iterable<GameObject> {
         onUpdate();
 
         for (GameComponent c : components)
-            if (c.actived && c.enabled) c.update();
+            if (c.activated && c.enabled) c.update();
 
         for (GameObject o : objects)
             if (o.enabled) o.update();
@@ -107,7 +123,7 @@ public class GameObject implements Iterable<GameObject> {
         onLateUpdate();
 
         for (GameComponent c : components)
-            if (c.actived && c.enabled) c.lateUpdate();
+            if (c.activated && c.enabled) c.lateUpdate();
 
         for (GameObject o : objects)
             if (o.enabled) o.lateUpdate();
@@ -125,9 +141,9 @@ public class GameObject implements Iterable<GameObject> {
     }
 
     final void active(GameScene scene) {
-        if (!actived) {
+        if (!activated) {
             this.scene = scene;
-            actived = true;
+            activated = true;
 
             Collections.sort(components);
 
@@ -159,7 +175,7 @@ public class GameObject implements Iterable<GameObject> {
         if (!objects.contains(child)) {
             child.parent = this;
             objects.add(child);
-            if (actived) scene.active(child);
+            if (activated) scene.active(child);
         }
     }
 
@@ -251,7 +267,7 @@ public class GameObject implements Iterable<GameObject> {
                 instance.gameObject = this;
                 components.add(instance);
                 Collections.sort(components);
-                if (actived) instance.active();
+                if (activated) instance.active();
             }
         }
 
@@ -261,7 +277,7 @@ public class GameObject implements Iterable<GameObject> {
     public <T extends GameComponent> void removeComponent(T instance) {
         if (instance != null && instance.gameObject == this) {
             instance.gameObject = null;
-            instance.actived = false;
+            instance.activated = false;
             components.remove(instance);
         }
     }
@@ -276,7 +292,7 @@ public class GameObject implements Iterable<GameObject> {
         return "GameObject{" +
                 "name='" + name + '\'' +
                 ", enabled=" + enabled +
-                ", actived=" + actived +
+                ", actived=" + activated +
                 ", destroyed=" + destroyed +
                 '}';
     }

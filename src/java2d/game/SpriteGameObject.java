@@ -49,15 +49,15 @@ public class SpriteGameObject extends GameObject {
     }
 
     public SpriteGameObject() {
-        this(null);
+        this("", "", 0.5, 0.5);
     }
 
     public SpriteGameObject(Sprite sprite) {
-        this(null, sprite, 0, 0);
+        this(null, sprite, 0.5, 0.5);
     }
 
     public SpriteGameObject(String name, Sprite sprite) {
-        this(name, sprite, 0, 0);
+        this(name, sprite, 0.5, 0.5);
     }
 
     public SpriteGameObject(Sprite sprite, double originX, double originY) {
@@ -72,6 +72,10 @@ public class SpriteGameObject extends GameObject {
         render.setOrigin(originX, originY);
 
         addComponent(render);
+    }
+
+    public SpriteGameObject(String spritePath) {
+        this(null, spritePath, 0.5, 0.5);
     }
 
     public SpriteGameObject(String spritePath, double originX, double originY) {
@@ -92,6 +96,6 @@ public class SpriteGameObject extends GameObject {
     }
 
     public SpriteGameObject(String name, String spritePath) {
-        this(name, spritePath, 0, 0);
+        this(name, spritePath, 0.5, 0.5);
     }
 }

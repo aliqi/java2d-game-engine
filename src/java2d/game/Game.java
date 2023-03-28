@@ -29,6 +29,8 @@ public class Game {
 
     private long lastTime;
 
+    private long currentTime;
+
     public GameFrame getFrame() {
         return frame;
     }
@@ -86,7 +88,7 @@ public class Game {
     }
 
     void update() {
-        long currentTime = System.currentTimeMillis();
+        currentTime = System.currentTimeMillis();
         long delta = currentTime - lastTime;
         Time.deltaTime = delta * 0.001f;
 
@@ -94,9 +96,13 @@ public class Game {
 
         if (scene != null)
             scene.update();
+    }
+
+    void lateUpdate() {
+        if (scene != null)
+            scene.lateUpdate();
 
         inputSystem.afterUpdateKeys();
-
         lastTime = currentTime;
     }
 
