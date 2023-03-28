@@ -23,10 +23,10 @@ public class Demo {
         System.out.println("Render size: " + renderSize);
 
         // Create a square
-        createSquare(renderSize, scene);
+        createSquare(scene);
     }
 
-    private static void createSquare(Dimension renderSize, GameScene scene) {
+    private static void createSquare(GameScene scene) {
         GameObject square = new GameObject("square");
 
         // Create SpriteRender
@@ -35,9 +35,6 @@ public class Demo {
         spriteRender.sprite = sprite;
 
         square.addComponent(spriteRender);
-        square.transform.setLocalPosition(
-                (renderSize.getWidth() - sprite.getWidth()) * 0.5,
-                (renderSize.getHeight() - sprite.getHeight()) * 0.5);
 
         scene.add(square);
     }
