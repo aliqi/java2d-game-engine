@@ -10,6 +10,11 @@ public class SpriteRender extends GraphicsRender {
 
     public Sprite sprite;
 
+    public SpriteRender() {
+        originX = 0.5;
+        originY = 0.5;
+    }
+
     public static SpriteRender create(String spritePath) {
         SpriteRender render = new SpriteRender();
         render.sprite = Sprite.load(spritePath);

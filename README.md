@@ -30,9 +30,7 @@ public class Demo {
         GameObject square = new GameObject("square");
 
         // Create SpriteRender
-        SpriteRender spriteRender = new SpriteRender();
-        Sprite sprite = Sprite.load("classpath:assets/sprites/square.png");
-        spriteRender.sprite = sprite;
+        SpriteRender spriteRender = SpriteRender.create("classpath:assets/sprites/square.png");
 
         square.addComponent(spriteRender);
 
