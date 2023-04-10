@@ -5,6 +5,7 @@ import java2d.game.UIElement;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 public class Button extends UIElement {
 
@@ -17,6 +18,8 @@ public class Button extends UIElement {
     public int MouseButton = MouseEvent.BUTTON1;
 
     public final Text text = new Text();
+
+    public final Point2D textAnchor = new Point2D.Double(0.5, 0.5);
 
     private Image image;
 
@@ -42,8 +45,17 @@ public class Button extends UIElement {
 
         text.origin.setLocation(0.5, 0.5);
         text.content = "Button";
-        text.transform.setPosition(getWidth() * 0.5, getHeight() * 0.5);
         add(text);
+        refresh();
+    }
+
+    @Override
+    protected void onSizeChanged() {
+        refresh();
+    }
+
+    public void refresh() {
+        text.transform.setLocalPosition(getWidth() * textAnchor.getX(), getHeight() * textAnchor.getY());
     }
 
     public void resetSize() {
@@ -52,7 +64,6 @@ public class Button extends UIElement {
         else
             setSize(normal.getWidth(null), normal.getHeight(null));
 
-        System.out.println(getSize());
     }
 
     @Override
