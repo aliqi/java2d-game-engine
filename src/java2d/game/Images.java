@@ -11,30 +11,43 @@ import java.io.InputStream;
 public interface Images {
 
     static Image loadFromClasspath(String path) {
-        Game.debug("load classpath image: " + path);
-
         if (Strings.isBlank(path))
             return null;
 
+        if (CachedImages.instance.containsKey(path))
+            return CachedImages.instance.get(path);
+
+        Game.debug("load classpath image: " + path);
+
         try (InputStream inputStream = Images.class.getClassLoader().getResourceAsStream(path)) {
-            return inputStream == null ? null : ImageIO.read(inputStream);
+            if (inputStream == null)
+                return null;
+
+            Image result = ImageIO.read(inputStream);
+            CachedImages.instance.put(path, result);
+            return result;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(path, e);
         }
     }
 
     static Image loadFromPath(String path) {
-        Game.debug("load image: " + path);
-
         if (Strings.isBlank(path))
             return null;
+
+        if (CachedImages.instance.containsKey(path))
+            return CachedImages.instance.get(path);
+
+        Game.debug("load image: " + path);
 
         File file = new File(path);
 
         try {
-            return ImageIO.read(file);
+            Image result = ImageIO.read(file);
+            CachedImages.instance.put(path, result);
+            return result;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(path, e);
         }
     }
 
@@ -42,9 +55,10 @@ public interface Images {
         if (Strings.isBlank(path))
             return null;
 
-        String clsp = "classpath:";
-        if (path.startsWith(clsp))
-            return loadFromClasspath(path.substring(clsp.length()));
+        String classpath = "classpath:";
+
+        if (path.startsWith(classpath))
+            return loadFromClasspath(path.substring(classpath.length()));
         return loadFromPath(path);
     }
 }

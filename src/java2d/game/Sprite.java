@@ -3,8 +3,11 @@
 package java2d.game;
 
 import java.awt.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Sprite {
+
+    private static final ConcurrentHashMap<String, Sprite> cached = new ConcurrentHashMap<>();
 
     private Image image;
 
@@ -29,6 +32,11 @@ public class Sprite {
     }
 
     public static Sprite load(String path) {
-        return new Sprite(Images.load(path));
+        if (cached.containsKey(path))
+            return cached.get(path);
+
+        Sprite sprite = new Sprite(Images.load(path));
+        cached.put(path, sprite);
+        return sprite;
     }
 }
