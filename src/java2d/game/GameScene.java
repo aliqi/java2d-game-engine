@@ -227,24 +227,35 @@ public class GameScene {
         }
     }
 
-    final void update() {
-        if (actived && enabled) {
+    protected void update() {
+    }
 
+    final void internalUpdate() {
+        if (actived && enabled) {
             for (GameObject o : roots)
                 if (o.enabled)
                     o.update();
 
             clean();
+
+            update();
         }
     }
 
-    void lateUpdate() {
-        for (GameObject o : roots)
-            if (o.enabled)
-                o.lateUpdate();
+    protected void lateUpdate() {
+    }
 
-        if (camera != null)
-            camera.updateTransform();
+    final void internalLateUpdate() {
+        if (actived && enabled) {
+            for (GameObject o : roots)
+                if (o.enabled)
+                    o.lateUpdate();
+
+            if (camera != null)
+                camera.updateTransform();
+
+            lateUpdate();
+        }
     }
 
     final void render(Graphics2D g) {

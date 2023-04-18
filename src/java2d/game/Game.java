@@ -83,12 +83,12 @@ public class Game {
         inputSystem.beforeUpdateKeys();
 
         if (scene != null)
-            scene.update();
+            scene.internalUpdate();
     }
 
     void lateUpdate() {
         if (scene != null)
-            scene.lateUpdate();
+            scene.internalLateUpdate();
 
         inputSystem.afterUpdateKeys();
         lastTime = currentTime;
