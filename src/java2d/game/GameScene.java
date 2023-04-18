@@ -29,7 +29,7 @@ public class GameScene {
 
     private final CanvasRenderBatch canvasRenderBatch = new CanvasRenderBatch();
 
-    private Camera camera;
+    private Camera camera = new Camera();
 
     public Game getGame() {
         return game;
@@ -48,7 +48,14 @@ public class GameScene {
     }
 
     public GameScene() {
+        addCamera();
         add(ui);
+    }
+
+    private void addCamera() {
+        GameObject c = new GameObject("camera");
+        c.addComponent(camera);
+        add(c);
     }
 
     void setupAntialias(Graphics2D g) {

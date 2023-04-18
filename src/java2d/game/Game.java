@@ -53,18 +53,6 @@ public class Game {
         setupConfig();
         start();
         load(new GameScene());
-        setupCamera();
-    }
-
-    private void setupCamera() {
-        GameObject co = new GameObject("camera");
-        Camera camera = new Camera();
-
-        scene.add(co);
-        co.addComponent(camera);
-
-        // Set scene camera
-        scene.setCamera(camera);
     }
 
     private void setupFrameEvents() {
