@@ -111,26 +111,32 @@ public class GameObject implements Iterable<GameObject> {
     }
 
     void update() {
-        onUpdate();
+        if (activated && !destroyed && enabled) {
+            onUpdate();
 
-        for (GameComponent c : components)
-            if (c.activated && c.enabled) c.update();
+            for (GameComponent c : components)
+                if (c.activated && !c.destroyed && c.enabled)
+                    c.update();
 
-        for (GameObject o : objects)
-            if (o.enabled) o.update();
+            for (GameObject o : objects)
+                o.update();
+        }
     }
 
     protected void onLateUpdate() {
     }
 
     void lateUpdate() {
-        onLateUpdate();
+        if (activated && !destroyed && enabled) {
+            onLateUpdate();
 
-        for (GameComponent c : components)
-            if (c.activated && c.enabled) c.lateUpdate();
+            for (GameComponent c : components)
+                if (c.activated && !c.destroyed && c.enabled)
+                    c.lateUpdate();
 
-        for (GameObject o : objects)
-            if (o.enabled) o.lateUpdate();
+            for (GameObject o : objects)
+                o.lateUpdate();
+        }
     }
 
     public GameObject find(String name) {

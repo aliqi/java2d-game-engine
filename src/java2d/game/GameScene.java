@@ -59,18 +59,15 @@ public class GameScene {
     }
 
     void setupAntialias(Graphics2D g) {
-        if (antialiasEnabled)
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        else
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        if (antialiasEnabled) g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        else g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     final void active() {
         if (!actived) {
             actived = true;
 
-            if (ui.space == Canvas.RenderSpace.Overlay)
-                ui.setSize(getGame().getRenderSize());
+            if (ui.space == Canvas.RenderSpace.Overlay) ui.setSize(getGame().getRenderSize());
 
             active(roots);
             loaded();
@@ -84,8 +81,7 @@ public class GameScene {
     }
 
     public final void destroy() {
-        if (destroyed)
-            return;
+        if (destroyed) return;
 
         actived = false;
         destroyed = true;
@@ -99,23 +95,20 @@ public class GameScene {
     public final <T extends GameObject> List<T> findGameObjects(Class<T> c) {
         List<T> list = new ArrayList<>();
         for (GameObject o : roots)
-            if (c.isAssignableFrom(o.getClass()))
-                list.add((T) o);
+            if (c.isAssignableFrom(o.getClass())) list.add((T) o);
         return list;
     }
 
     public final <T extends GameObject> T findGameObject(Class<T> c) {
         for (GameObject o : roots)
-            if (c.isAssignableFrom(o.getClass()))
-                return (T) o;
+            if (c.isAssignableFrom(o.getClass())) return (T) o;
         return null;
     }
 
     public final <T extends GameComponent> T findComponent(Class<T> c) {
         for (GameObject o : roots) {
             T result = o.getComponentInChildren(c);
-            if (result != null)
-                return result;
+            if (result != null) return result;
         }
         return null;
     }
@@ -164,8 +157,7 @@ public class GameScene {
     private void findGraphicsRender(List<RenderOrderable> list, Queue<GameObject> queue, GameObject o) {
         List<GraphicsRender> renders = o.getComponents(GraphicsRender.class);
 
-        if (renders != null)
-            list.addAll(renders);
+        if (renders != null) list.addAll(renders);
 
         for (GameObject oc : o)
             queue.offer(oc);
@@ -183,8 +175,7 @@ public class GameScene {
                 roots.add(gameObject);
                 gameObject.transform.invalidate();
 
-                if (actived)
-                    active(gameObject);
+                if (actived) active(gameObject);
             }
         }
     }
@@ -206,7 +197,8 @@ public class GameScene {
     void active(Queue<GameObject> queue) {
         while (queue.size() > 0) {
             GameObject o = queue.poll();
-            o.active(this);
+
+            if (!o.destroyed) o.active(this);
 
             for (GameObject c : o)
                 queue.offer(c);
@@ -231,10 +223,9 @@ public class GameScene {
     }
 
     final void internalUpdate() {
-        if (actived && enabled) {
+        if (actived && !destroyed && enabled) {
             for (GameObject o : roots)
-                if (o.enabled)
-                    o.update();
+                o.update();
 
             clean();
 
@@ -246,10 +237,9 @@ public class GameScene {
     }
 
     final void internalLateUpdate() {
-        if (actived && enabled) {
+        if (actived && !destroyed && enabled) {
             for (GameObject o : roots)
-                if (o.enabled)
-                    o.lateUpdate();
+                o.lateUpdate();
 
             if (camera != null)
                 camera.updateTransform();
@@ -259,7 +249,7 @@ public class GameScene {
     }
 
     final void render(Graphics2D g) {
-        if (actived) {
+        if (actived && !destroyed) {
             graphicsRenderBatch.render(this, g);
             canvasRenderBatch.render(this, g);
         }

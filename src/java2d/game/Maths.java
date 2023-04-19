@@ -85,7 +85,35 @@ public interface Maths {
         return result;
     }
 
+    static double distance(Point2D src, Point2D target) {
+        double dx = target.getX() - src.getX();
+        double dy = target.getY() - src.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     static Point2D clone(Point2D point) {
         return new Point2D.Double(point.getX(), point.getY());
+    }
+
+    static Point2D lerp(Point2D from, Point2D to, double amount) {
+        Point2D d = subtract(to, from);
+        normalize(d);
+        d.setLocation(from.getX() + d.getX() * amount,
+                from.getY() + d.getY() * amount);
+        return d;
+    }
+
+    static Point2D moveTowards(Point2D current, Point2D target, double maxDistanceDelta) {
+        double dx = target.getX() - current.getX();
+        double dy = target.getY() - current.getY();
+        double sqDist = dx * dx + dy * dy;
+
+        if (sqDist == 0 || (maxDistanceDelta >= 0 && sqDist <= maxDistanceDelta * maxDistanceDelta))
+            return target;
+
+        var dist = Math.sqrt(sqDist);
+
+        return new Point2D.Double(current.getX() + dx / dist * maxDistanceDelta,
+                current.getY() + dy / dist * maxDistanceDelta);
     }
 }
