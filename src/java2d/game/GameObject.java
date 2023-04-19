@@ -154,6 +154,7 @@ public class GameObject implements Iterable<GameObject> {
         if (!activated) {
             this.scene = scene;
             activated = true;
+            transform.invalidate();
 
             Collections.sort(components);
 
